@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<resources>
+    <color name="red">#D64545</color>
+    <color name="red_dark">#A92F36</color>
+    <color name="red_light">#FBE9E9</color>
+    <color name="background">#FAFAFC</color>
+    <color name="ink">#202532</color>
+    <color name="muted">#747B88</color>
+</resources>

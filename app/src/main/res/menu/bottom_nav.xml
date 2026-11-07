@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/home" android:icon="@drawable/ic_home" android:title="Tổng quan"/>
+    <item android:id="@+id/body" android:icon="@drawable/ic_body" android:title="Cơ thể"/>
+    <item android:id="@+id/diary" android:icon="@drawable/ic_diary" android:title="Nhật ký"/>
+    <item android:id="@+id/statistics" android:icon="@drawable/ic_statistics" android:title="Thống kê"/>
+    <item android:id="@+id/profile" android:icon="@drawable/ic_profile" android:title="Cá nhân"/>
+</menu>
