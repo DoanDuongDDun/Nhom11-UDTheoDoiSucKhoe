@@ -9,6 +9,7 @@
     <fragment android:id="@+id/profile" android:name="com.example.vitality.ui.profile.ProfileFragment" android:label="Cá nhân"/>
     <fragment android:id="@+id/measurementEditor" android:name="com.example.vitality.ui.body.MeasurementEditorFragment"/>
     <fragment android:id="@+id/comparison" android:name="com.example.vitality.ui.body.ComparisonFragment"/>
+    <fragment android:id="@+id/period" android:name="com.example.vitality.ui.period.PeriodFragment" android:label="Chu kỳ kinh nguyệt"/>
     <fragment android:id="@+id/sleep" android:name="com.example.vitality.ui.sleep.SleepFragment"/>
     <fragment android:id="@+id/habit" android:name="com.example.vitality.ui.habit.HabitFragment"/>
     <fragment android:id="@+id/symptom" android:name="com.example.vitality.ui.symptom.SymptomFragment" android:label="Triệu chứng"/>

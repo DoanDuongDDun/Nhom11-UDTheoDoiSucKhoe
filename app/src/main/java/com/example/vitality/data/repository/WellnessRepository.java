@@ -11,10 +11,11 @@ public class WellnessRepository  {
     /** Sinh trước các lần thực hiện của 8 ngày tới; chỉ sinh lại khi phần đã sinh cách mốc mới ≥ 1 giờ. */
     private static final long LOOKAHEAD_MS=8*86400000L,REGENERATE_GAP_MS=3600000L;
     public final WellnessDao dao;
+    public final com.example.vitality.data.dao.PeriodDao periods;
     private final VitalityDatabase db;
     public WellnessRepository(Context c) {
         db=VitalityDatabase.get(c);
-        dao=db.wellness();
+        dao=db.wellness();periods=db.periods();
     }
     public void saveJournal(JournalEntry e) {
         db.runInTransaction(()-> {
@@ -26,6 +27,14 @@ public class WellnessRepository  {
             if(e.id==0)dao.insert(e);else dao.update(e);
         }
         );
+    }
+    public void savePeriod(PeriodEntry e) {
+        db.runInTransaction(() -> {
+            long today=Formats.dayStart(System.currentTimeMillis());
+            if(e.startDay>e.endDay||e.startDay>today||e.endDay>today)throw new IllegalArgumentException("Ngày ghi không hợp lệ");
+            if(periods.overlaps(e.id,e.startDay,e.endDay)>0)throw new IllegalArgumentException("Kỳ kinh trùng với bản ghi đã có");
+            if(e.id==0)periods.insert(e);else periods.update(e);
+        });
     }
     public void refreshHabits() {
         db.runInTransaction(()-> {

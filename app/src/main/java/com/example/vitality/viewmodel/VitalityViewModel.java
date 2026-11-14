@@ -10,6 +10,7 @@ public class VitalityViewModel extends AndroidViewModel  {
     public final BodyRepository body;
     public final GoalRepository goalRepo;
     public final LiveData<List<Goal>> goals;
+    public final LiveData<List<PeriodEntry>> periods;
     public final WellnessRepository wellness;
     public final SymptomRepository symptomRepo;
     public final LiveData<List<Symptom>> symptoms;
@@ -25,7 +26,7 @@ public class VitalityViewModel extends AndroidViewModel  {
         super(app);
         body=new BodyRepository(app);
         goalRepo=new GoalRepository(app);goals=goalRepo.observe();
-        wellness=new WellnessRepository(app);
+        wellness=new WellnessRepository(app);periods=wellness.periods.observeAll();
         symptomRepo=new SymptomRepository(app);
         symptoms=symptomRepo.observeAll();
         measurements=body.observeAll();

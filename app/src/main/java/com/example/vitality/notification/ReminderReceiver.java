@@ -11,6 +11,7 @@ import com.example.vitality.R;
 import com.example.vitality.data.repository.WellnessRepository;
 import com.example.vitality.data.entity.HabitOccurrence;
 import com.example.vitality.utils.Formats;
+import com.example.vitality.utils.PeriodLogic;
 public class ReminderReceiver extends BroadcastReceiver  {
     private static final String[] DAILY= {
         "measure","water","bed"
@@ -55,6 +56,17 @@ public class ReminderReceiver extends BroadcastReceiver  {
                         edit.putLong(marker,o.dueAt);
                     }
                 }
+                if(p.getBoolean("period",false)) {
+                    Long next=PeriodLogic.nextStart(repo.periods.all());
+                    if(next!=null) {
+                        long remindDay=Formats.addDays(next,-2);
+                        String marker="period_"+next;
+                        if(Formats.dayStart(time)>=remindDay&&Formats.dayStart(time)<=next&&now.get(Calendar.HOUR_OF_DAY)>=8&&!p.getBoolean(marker,false)) {
+                            notify(app,72,"K\u1ef3 kinh d\u1ef1 ki\u1ebfn b\u1eaft \u0111\u1ea7u ng\u00e0y "+Formats.day(next));
+                            edit.putBoolean(marker,true);
+                        }
+                    }
+                }
                 edit.apply();
             }
             finally {
@@ -70,6 +82,11 @@ public class ReminderReceiver extends BroadcastReceiver  {
             if(k.startsWith("occurrence_")) {
                 Object v=entry.getValue();
                 if(!(v instanceof Long)||(Long)v<time-2*HOUR_MS)edit.remove(k);
+                continue;
+            }
+            if(k.startsWith("period_")) {
+                try { if(Long.parseLong(k.substring(7))<Formats.addDays(Formats.dayStart(time),-7))edit.remove(k); }
+                catch(NumberFormatException e) { edit.remove(k); }
                 continue;
             }
             for(String key:DAILY)if(k.length()>key.length()&&k.startsWith(key)&&!k.endsWith(today))edit.remove(k);

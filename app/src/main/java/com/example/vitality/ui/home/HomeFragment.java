@@ -71,6 +71,7 @@ public class HomeFragment extends PageFragment  {
         binding.content.addView(cats.getRoot());
         cats.catActivity.setOnClickListener(x->navigate(R.id.activity));
         cats.catSleep.setOnClickListener(x->navigate(R.id.sleep));
+        cats.catPeriod.setOnClickListener(x->navigate(R.id.period));
         cats.catNutrition.setOnClickListener(x->navigate(R.id.nutrition));
         // Thẻ tiến độ hôm nay
         double[] ratios=new double[4];

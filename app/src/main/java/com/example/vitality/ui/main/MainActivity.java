@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity  {
             int id=destination.getId();
             int tab=id;
             if(id==R.id.measurementEditor||id==R.id.comparison)tab=R.id.body;
-            else if(id==R.id.goals||id==R.id.goalEditor||id==R.id.sleep||id==R.id.habit||id==R.id.diary
+            else if(id==R.id.goals||id==R.id.goalEditor||id==R.id.sleep||id==R.id.period||id==R.id.habit||id==R.id.diary
                     ||id==R.id.statistics||id==R.id.symptom||id==R.id.symptomEditor)tab=R.id.home;
             android.view.MenuItem item=v.bottomNav.getMenu().findItem(tab);
             if(item!=null)item.setChecked(true);
