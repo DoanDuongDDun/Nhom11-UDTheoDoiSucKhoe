@@ -98,7 +98,7 @@ import java.util.*;
         raw.execSQL("INSERT INTO body_measurements (id,profileId,measuredAt,heightCm,weightKg,chestCm,waistCm,hipCm,bodyTemplate,rendererVersion,note,createdAt,updatedAt) VALUES(1,1,1000,170,65,90,75,95,0,1,'preserved',1000,1000)");
         raw.setVersion(1);
         raw.close();
-        VitalityDatabase db=Room.databaseBuilder(c,VitalityDatabase.class,name).addMigrations(VitalityDatabase.MIGRATION_1_2).build();
+        VitalityDatabase db=Room.databaseBuilder(c,VitalityDatabase.class,name).addMigrations(VitalityDatabase.MIGRATION_1_2,VitalityDatabase.MIGRATION_2_3).build();
         android.database.Cursor cursor=db.getOpenHelper().getReadableDatabase().query("SELECT note FROM body_measurements WHERE id=1");
         assertTrue(cursor.moveToFirst());
         assertEquals("preserved",cursor.getString(0));

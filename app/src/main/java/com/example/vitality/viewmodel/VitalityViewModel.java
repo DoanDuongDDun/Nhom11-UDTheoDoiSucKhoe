@@ -9,6 +9,8 @@ import com.example.vitality.data.repository.*;
 public class VitalityViewModel extends AndroidViewModel  {
     public final BodyRepository body;
     public final WellnessRepository wellness;
+    public final SymptomRepository symptomRepo;
+    public final LiveData<List<Symptom>> symptoms;
     public final LiveData<List<BodyMeasurement>> measurements;
     public final LiveData<List<JournalEntry>> journals;
     public final LiveData<UserProfile> profile;
@@ -21,6 +23,8 @@ public class VitalityViewModel extends AndroidViewModel  {
         super(app);
         body=new BodyRepository(app);
         wellness=new WellnessRepository(app);
+        symptomRepo=new SymptomRepository(app);
+        symptoms=symptomRepo.observeAll();
         measurements=body.observeAll();
         journals=wellness.dao.journals();
         profile=wellness.dao.profile();
@@ -34,35 +38,72 @@ public class VitalityViewModel extends AndroidViewModel  {
         }
         ,false);
     }
+    /** Một Handler dùng chung thay vì tạo mới cho mỗi lần lưu. */
+    private static final Handler MAIN=new Handler(Looper.getMainLooper());
+    /** Kết thúc một thao tác ghi (gọi từ luồng nền): trả về luồng chính, tắt busy, và tăng bộ đếm lưu + hiện thông báo tương ứng. */
+    private void finish(String successMessage,String errorMessage) {
+        MAIN.post(()-> {
+            busy.setValue(false);
+            if(successMessage!=null) {
+                saved.setValue(saved.getValue()+1);
+                message.setValue(successMessage);
+            }
+            else message.setValue(errorMessage);
+        }
+        );
+    }
     public void run(Runnable action,boolean notify) {
         busy.setValue(true);
         WellnessRepository.IO.execute(()-> {
             try {
-                action.run();new Handler(Looper.getMainLooper()).post(()-> {
-                    busy.setValue(false);if(notify) {
-                        saved.setValue(saved.getValue()+1);message.setValue("Đã lưu");
+                action.run();
+                MAIN.post(()-> {
+                    busy.setValue(false);
+                    if(notify) {
+                        saved.setValue(saved.getValue()+1);
+                        message.setValue("Đã lưu");
                     }
                 }
                 );
             }
             catch(Exception e) {
-                new Handler(Looper.getMainLooper()).post(()-> {
-                    busy.setValue(false);message.setValue("Không thể lưu: "+e.getMessage());
-                }
-                );
+                finish(null,"Không thể lưu: "+e.getMessage());
             }
         }
         );
     }
     public void save(BodyMeasurement m) {
         busy.setValue(true);
-        body.save(m,e->new Handler(Looper.getMainLooper()).post(()-> {
-            busy.setValue(false);if(e==null) {
-                saved.setValue(saved.getValue()+1);message.setValue("Đã lưu số đo");
+        body.save(m,e->finish(e==null?"Lưu thành công":null,"Lỗi lưu dữ liệu!"));
+    }
+    public void saveOverwrite(BodyMeasurement m,List<BodyMeasurement> conflicts) {
+        busy.setValue(true);
+        body.saveOverwrite(m,conflicts,e->finish(e==null?"Lưu thành công":null,"Lỗi lưu dữ liệu!"));
+    }
+    public void saveSymptom(Symptom s) {
+        busy.setValue(true);
+        WellnessRepository.IO.execute(()-> {
+            try {
+                symptomRepo.save(s);
+                finish("Lưu thành công",null);
             }
-            else message.setValue("Không thể lưu: "+e.getMessage());
+            catch(Exception e) {
+                finish(null,"Lỗi lưu dữ liệu!");
+            }
         }
-        ));
+        );
+    }
+    public void deleteSymptom(Symptom s) {
+        WellnessRepository.IO.execute(()-> {
+            try {
+                symptomRepo.delete(s);
+                message.postValue("Đã xóa triệu chứng");
+            }
+            catch(Exception e) {
+                message.postValue("Lỗi lưu dữ liệu!");
+            }
+        }
+        );
     }
     public void delete(BodyMeasurement m) {
         body.delete(m,e->message.postValue(e==null?"Đã xóa số đo":"Không thể xóa: "+e.getMessage()));

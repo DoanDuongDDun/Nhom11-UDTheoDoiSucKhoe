@@ -9,11 +9,18 @@ import com.example.vitality.utils.*;
 public class HabitFragment extends PageFragment  {
     @Override public void onViewCreated(View v,Bundle b) {
         heading("Chu kỳ sinh hoạt","Hoàn thành trong vòng 1 giờ sau giờ nhắc");
-        vm.habits.observe(getViewLifecycleOwner(),x->render());
-        vm.occurrences.observe(getViewLifecycleOwner(),x->render());
+        observeAll(this::render,vm.habits,vm.occurrences);
     }
     private void render() {
         clear();
+        long heroNow=System.currentTimeMillis();
+        int heroDue=0,heroDone=0;
+        List<HabitOccurrence> heroAll=vm.occurrences.getValue();
+        if(heroAll!=null)for(HabitOccurrence ho:heroAll)if(ho.dueAt<=heroNow&&ho.dueAt>=heroNow-30*Formats.DAY_MS) {
+            heroDue++;
+            if(ho.status.equals("done"))heroDone++;
+        }
+        hero(com.example.vitality.R.drawable.bg_diary_hero,com.example.vitality.R.drawable.ic_spark,"30 NGÀY GẦN NHẤT",heroDue==0?"--":Math.round(HealthMath.completion(heroDone,heroDue))+"%","hoàn thành",heroDue==0?"Chưa có lần đến hạn":heroDone+" / "+heroDue+" lần đã hoàn thành");
         button("Quay lại",this::back);
         button("+ Tạo lịch sinh hoạt",()->HabitEditorDialog.create(0).show(getParentFragmentManager(),"habit_editor"));
         List<HabitSchedule> schedules=vm.habits.getValue();
@@ -36,11 +43,11 @@ public class HabitFragment extends PageFragment  {
         List<HabitOccurrence> visible=new ArrayList<>();
         int due=0,done=0;
         for(HabitOccurrence o:all) {
-            if(o.dueAt<=now&&o.dueAt>=now-30*86400000L) {
+            if(o.dueAt<=now&&o.dueAt>=now-30*Formats.DAY_MS) {
                 due++;
                 if(o.status.equals("done"))done++;
             }
-            if(o.dueAt>=now-30*86400000L&&o.dueAt<=now+86400000L)visible.add(o);
+            if(o.dueAt>=now-30*Formats.DAY_MS&&o.dueAt<=now+Formats.DAY_MS)visible.add(o);
         }
         text(due==0?"Chưa có lần đến hạn":"30 ngày: "+Formats.number(HealthMath.completion(done,due))+"% hoàn thành");
         text("Lịch sử 30 ngày và 24 giờ sắp tới");

@@ -1,0 +1,494 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "6b46386a1e32e7180956e10ad8f5a9af",
+    "entities": [
+      {
+        "tableName": "body_measurements",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `profileId` INTEGER NOT NULL, `measuredAt` INTEGER NOT NULL, `heightCm` REAL NOT NULL, `weightKg` REAL NOT NULL, `chestCm` REAL NOT NULL, `waistCm` REAL NOT NULL, `hipCm` REAL NOT NULL, `upperArmCm` REAL, `thighCm` REAL, `calfCm` REAL, `bodyTemplate` INTEGER NOT NULL, `rendererVersion` INTEGER NOT NULL, `note` TEXT, `createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "profileId",
+            "columnName": "profileId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "measuredAt",
+            "columnName": "measuredAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "heightCm",
+            "columnName": "heightCm",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weightKg",
+            "columnName": "weightKg",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chestCm",
+            "columnName": "chestCm",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "waistCm",
+            "columnName": "waistCm",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hipCm",
+            "columnName": "hipCm",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "upperArmCm",
+            "columnName": "upperArmCm",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "thighCm",
+            "columnName": "thighCm",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "calfCm",
+            "columnName": "calfCm",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "bodyTemplate",
+            "columnName": "bodyTemplate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rendererVersion",
+            "columnName": "rendererVersion",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_body_measurements_measuredAt",
+            "unique": false,
+            "columnNames": [
+              "measuredAt"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_body_measurements_measuredAt` ON `${TABLE_NAME}` (`measuredAt`)"
+          }
+        ]
+      },
+      {
+        "tableName": "journal",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `kind` TEXT, `title` TEXT, `category` TEXT, `portion` TEXT, `note` TEXT, `startedAt` INTEGER NOT NULL, `endedAt` INTEGER, `amount` REAL NOT NULL, `awakeMinutes` REAL NOT NULL, `calories` REAL, `distanceKm` REAL, `quality` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "kind",
+            "columnName": "kind",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "portion",
+            "columnName": "portion",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "startedAt",
+            "columnName": "startedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endedAt",
+            "columnName": "endedAt",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "amount",
+            "columnName": "amount",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "awakeMinutes",
+            "columnName": "awakeMinutes",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "calories",
+            "columnName": "calories",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "distanceKm",
+            "columnName": "distanceKm",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "quality",
+            "columnName": "quality",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_journal_startedAt",
+            "unique": false,
+            "columnNames": [
+              "startedAt"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_journal_startedAt` ON `${TABLE_NAME}` (`startedAt`)"
+          },
+          {
+            "name": "index_journal_kind",
+            "unique": false,
+            "columnNames": [
+              "kind"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_journal_kind` ON `${TABLE_NAME}` (`kind`)"
+          }
+        ]
+      },
+      {
+        "tableName": "profile",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `birthday` TEXT, `gender` TEXT, `bodyTemplate` INTEGER NOT NULL, `targetWeight` REAL, `targetWaist` REAL, `waterGoal` REAL NOT NULL, `activityGoal` REAL NOT NULL, `sleepGoal` REAL NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "birthday",
+            "columnName": "birthday",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "gender",
+            "columnName": "gender",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "bodyTemplate",
+            "columnName": "bodyTemplate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "targetWeight",
+            "columnName": "targetWeight",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "targetWaist",
+            "columnName": "targetWaist",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "waterGoal",
+            "columnName": "waterGoal",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "activityGoal",
+            "columnName": "activityGoal",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sleepGoal",
+            "columnName": "sleepGoal",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "habits",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT, `note` TEXT, `hour` INTEGER NOT NULL, `minute` INTEGER NOT NULL, `weekdays` INTEGER NOT NULL, `startsAt` INTEGER NOT NULL, `generatedThrough` INTEGER NOT NULL, `endsAt` INTEGER, `paused` INTEGER NOT NULL, `deleted` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "hour",
+            "columnName": "hour",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "minute",
+            "columnName": "minute",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weekdays",
+            "columnName": "weekdays",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startsAt",
+            "columnName": "startsAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "generatedThrough",
+            "columnName": "generatedThrough",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endsAt",
+            "columnName": "endsAt",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "paused",
+            "columnName": "paused",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deleted",
+            "columnName": "deleted",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "occurrences",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `scheduleId` INTEGER NOT NULL, `dueAt` INTEGER NOT NULL, `title` TEXT, `status` TEXT, FOREIGN KEY(`scheduleId`) REFERENCES `habits`(`id`) ON UPDATE NO ACTION ON DELETE RESTRICT )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scheduleId",
+            "columnName": "scheduleId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dueAt",
+            "columnName": "dueAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_occurrences_scheduleId_dueAt",
+            "unique": true,
+            "columnNames": [
+              "scheduleId",
+              "dueAt"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_occurrences_scheduleId_dueAt` ON `${TABLE_NAME}` (`scheduleId`, `dueAt`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "habits",
+            "onDelete": "RESTRICT",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "scheduleId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "symptoms",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `note` TEXT, `severity` INTEGER NOT NULL, `occurredAt` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "severity",
+            "columnName": "severity",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "occurredAt",
+            "columnName": "occurredAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_symptoms_occurredAt",
+            "unique": false,
+            "columnNames": [
+              "occurredAt"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_symptoms_occurredAt` ON `${TABLE_NAME}` (`occurredAt`)"
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6b46386a1e32e7180956e10ad8f5a9af')"
+    ]
+  }
+}

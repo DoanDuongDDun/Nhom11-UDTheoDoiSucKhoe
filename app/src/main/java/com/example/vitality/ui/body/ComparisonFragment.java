@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.*;
 import java.util.*;
 import com.example.vitality.R;
+import com.example.vitality.databinding.WidgetStatHeroBinding;
 import com.example.vitality.ui.main.PageFragment;
 import com.example.vitality.data.entity.*;
 import com.example.vitality.graphics.*;
@@ -15,6 +16,7 @@ public class ComparisonFragment extends PageFragment  {
     private boolean overlay;
     private BodyComparisonView shapes;
     private TextView table;
+    private WidgetStatHeroBinding heroView;
     private int opacity=110;
     @Override public void onViewCreated(View v,Bundle state) {
         if(state!=null) {
@@ -25,7 +27,7 @@ public class ComparisonFragment extends PageFragment  {
         }
         heading("So sánh giai đoạn","Cùng tỷ lệ hiển thị, căn tại bàn chân");
         vm.measurements.observe(getViewLifecycleOwner(),data-> {
-            rows=data;clear();button("Quay lại",this::back);if(rows.size()<2) {
+            rows=data;clear();heroView=rows.size()>=2?hero(R.drawable.bg_energy,R.drawable.ic_scale,"THAY ĐỔI CÂN NẶNG","--","kg","Chọn hai mốc để so sánh"):null;button("Quay lại",this::back);if(rows.size()<2) {
                 text("Cần ít nhất hai lần đo để so sánh. Hãy thêm số đo mới.");return;
             }
             a=1;b=0;for(int i=0;i<rows.size();i++) {
@@ -61,6 +63,7 @@ public class ComparisonFragment extends PageFragment  {
         if(shapes==null||table==null||rows==null||rows.size()<2)return;
         if(a==b) {
             table.setText("Hãy chọn hai bản ghi khác nhau.");
+            if(heroView!=null)updateHero(heroView,"THAY ĐỔI CÂN NẶNG","--","kg","Hãy chọn hai bản ghi khác nhau");
             shapes.setVisibility(View.GONE);
             return;
         }
@@ -74,6 +77,8 @@ public class ComparisonFragment extends PageFragment  {
             y=t;
         }
         shapes.setMeasurements(x,y);
+        double weightChange=y.weightKg-x.weightKg;
+        if(heroView!=null)updateHero(heroView,"THAY ĐỔI CÂN NẶNG",(weightChange>0?"+":weightChange<0?"−":"")+Formats.number(Math.abs(weightChange)),"kg","Vòng eo "+Formats.delta(x.waistCm,y.waistCm)+" • "+Formats.day(x.measuredAt)+" → "+Formats.day(y.measuredAt));
         shapes.setOverlay(overlay);
         shapes.setOpacity(opacity);
         StringBuilder s=new StringBuilder("Trước: "+Formats.date(x.measuredAt)+" #"+x.id+"\nSau: "+Formats.date(y.measuredAt)+" #"+y.id+"\n\n");
@@ -102,6 +107,7 @@ public class ComparisonFragment extends PageFragment  {
     @Override public void onDestroyView() {
         super.onDestroyView();
         shapes=null;
+        heroView=null;
         table=null;
     }
 }

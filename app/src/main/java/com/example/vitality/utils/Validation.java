@@ -7,7 +7,7 @@ public final class Validation  {
             50,250
         }
         , {
-            2,500
+            2,300
         }
         , {
             20,250

@@ -5,7 +5,8 @@ import java.util.List;
 import com.example.vitality.data.entity.*;
 @Dao public interface WellnessDao  {
     @Query("SELECT * FROM journal ORDER BY startedAt DESC,id DESC") LiveData<List<JournalEntry>> journals();
-    @Query("SELECT * FROM journal WHERE kind='sleep'") List<JournalEntry> sleeps();
+    @Query("SELECT COUNT(*) FROM journal WHERE kind='sleep' AND endedAt IS NULL AND id!=:id") int activeSleepsExcept(long id);
+    @Query("SELECT COUNT(*) FROM journal WHERE kind='sleep' AND id!=:id AND startedAt<:end AND COALESCE(endedAt,9223372036854775807)>:start") int overlappingSleeps(long id,long start,long end);
     @Insert long insert(JournalEntry e);
     @Update void update(JournalEntry e);
     @Delete void delete(JournalEntry e);

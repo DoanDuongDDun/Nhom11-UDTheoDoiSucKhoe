@@ -1,6 +1,8 @@
 <?xml version="1.0" ?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main_graph" app:startDestination="@id/home">
     <fragment android:id="@+id/home" android:name="com.example.vitality.ui.home.HomeFragment" android:label="Tổng quan"/>
+    <fragment android:id="@+id/nutrition" android:name="com.example.vitality.ui.nutrition.NutritionFragment" android:label="Dinh dưỡng"/>
+    <fragment android:id="@+id/activity" android:name="com.example.vitality.ui.activity.ActivityFragment" android:label="Hoạt động"/>
     <fragment android:id="@+id/body" android:name="com.example.vitality.ui.body.BodyFragment" android:label="Cơ thể"/>
     <fragment android:id="@+id/diary" android:name="com.example.vitality.ui.diary.DiaryFragment" android:label="Nhật ký"/>
     <fragment android:id="@+id/statistics" android:name="com.example.vitality.ui.statistics.StatisticsFragment" android:label="Thống kê"/>
@@ -9,4 +11,6 @@
     <fragment android:id="@+id/comparison" android:name="com.example.vitality.ui.body.ComparisonFragment"/>
     <fragment android:id="@+id/sleep" android:name="com.example.vitality.ui.sleep.SleepFragment"/>
     <fragment android:id="@+id/habit" android:name="com.example.vitality.ui.habit.HabitFragment"/>
+    <fragment android:id="@+id/symptom" android:name="com.example.vitality.ui.symptom.SymptomFragment" android:label="Triệu chứng"/>
+    <fragment android:id="@+id/symptomEditor" android:name="com.example.vitality.ui.symptom.SymptomEditorFragment"/>
 </navigation>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:minHeight="60dp" android:orientation="horizontal">
+        <FrameLayout android:layout_width="36dp" android:layout_height="36dp" android:background="@drawable/bg_icon_blue">
+            <ImageView android:layout_width="18dp" android:layout_height="18dp" android:layout_gravity="center" android:importantForAccessibility="no" android:src="@drawable/ic_spark" android:tint="#3785DC"/>
+        </FrameLayout>
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="11dp" android:layout_weight="1" android:orientation="vertical">
+            <TextView android:id="@+id/rem_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/ink" android:textSize="14sp" android:textStyle="bold"/>
+            <TextView android:id="@+id/rem_sub" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:textColor="#7F8C84" android:textSize="11sp"/>
+        </LinearLayout>
+        <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/rem_switch" android:layout_width="wrap_content" android:layout_height="wrap_content" app:thumbTint="@color/switch_thumb" app:trackTint="@color/switch_track"/>
+    </LinearLayout>
+    <View android:id="@+id/rem_divider" android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider"/>
+</LinearLayout>

@@ -8,6 +8,8 @@ import java.util.*;
 import java.util.concurrent.*;
 public class WellnessRepository  {
     public static final ExecutorService IO=Executors.newSingleThreadExecutor();
+    /** Sinh trước các lần thực hiện của 8 ngày tới; chỉ sinh lại khi phần đã sinh cách mốc mới ≥ 1 giờ. */
+    private static final long LOOKAHEAD_MS=8*86400000L,REGENERATE_GAP_MS=3600000L;
     public final WellnessDao dao;
     private final VitalityDatabase db;
     public WellnessRepository(Context c) {
@@ -17,9 +19,9 @@ public class WellnessRepository  {
     public void saveJournal(JournalEntry e) {
         db.runInTransaction(()-> {
             if(e.kind.equals("sleep")) {
-                if(e.endedAt!=null)HealthMath.sleepMinutes(e.startedAt,e.endedAt,e.awakeMinutes); for(JournalEntry other:dao.sleeps())if(other.id!=e.id) {
-                    if(e.endedAt==null&&other.endedAt==null)throw new IllegalArgumentException("Đã có một phiên ngủ đang hoạt động");if(HealthMath.overlaps(e.startedAt,e.endedAt==null?Long.MAX_VALUE:e.endedAt,other.startedAt,other.endedAt==null?Long.MAX_VALUE:other.endedAt))throw new IllegalArgumentException("Khoảng ngủ trùng với phiên đã lưu");
-                }
+                if(e.endedAt!=null)HealthMath.sleepMinutes(e.startedAt,e.endedAt,e.awakeMinutes);
+                if(e.endedAt==null&&dao.activeSleepsExcept(e.id)>0)throw new IllegalArgumentException("Đã có một phiên ngủ đang hoạt động");
+                if(dao.overlappingSleeps(e.id,e.startedAt,e.endedAt==null?Long.MAX_VALUE:e.endedAt)>0)throw new IllegalArgumentException("Khoảng ngủ trùng với phiên đã lưu");
             }
             if(e.id==0)dao.insert(e);else dao.update(e);
         }
@@ -27,7 +29,9 @@ public class WellnessRepository  {
     }
     public void refreshHabits() {
         db.runInTransaction(()-> {
-            long now=System.currentTimeMillis();for(HabitSchedule h:dao.allHabits())generate(h,now,now+8*86400000L);dao.markMissed(now);
+            long now=System.currentTimeMillis(),until=now+LOOKAHEAD_MS;
+            for(HabitSchedule h:dao.allHabits())if(until-h.generatedThrough>=REGENERATE_GAP_MS)generate(h,now,until);
+            dao.markMissed(now);
         }
         );
     }
@@ -59,7 +63,7 @@ public class WellnessRepository  {
             long now=System.currentTimeMillis();if(h.id==0)h.id=dao.insert(h);else {
                 dao.removeFuture(h.id,now);h.generatedThrough=now;dao.update(h);
             }
-            generate(h,now,now+8*86400000L);
+            generate(h,now,now+LOOKAHEAD_MS);
         }
         );
     }

@@ -12,6 +12,16 @@ import com.example.vitality.data.repository.WellnessRepository;
 import com.example.vitality.data.entity.HabitOccurrence;
 import com.example.vitality.utils.Formats;
 public class ReminderReceiver extends BroadcastReceiver  {
+    private static final String[] DAILY= {
+        "measure","water","bed"
+    };
+    private static final int[] DAILY_HOUR= {
+        8,10,22
+    };
+    private static final String[] DAILY_TEXT= {
+        "Đã đến lúc cập nhật số đo","Ghi nhận nước uống hôm nay","Chuẩn bị cho giấc ngủ"
+    };
+    private static final long HOUR_MS=3600000L;
     @Override public void onReceive(Context c,Intent i) {
         Context app=c.getApplicationContext();
         if(!"com.example.vitality.REMIND".equals(i.getAction())) {
@@ -21,25 +31,49 @@ public class ReminderReceiver extends BroadcastReceiver  {
         PendingResult result=goAsync();
         WellnessRepository.IO.execute(()-> {
             try {
-                WellnessRepository repo=new WellnessRepository(app);repo.refreshHabits();if(Build.VERSION.SDK_INT>=33&&ContextCompat.checkSelfPermission(app,Manifest.permission.POST_NOTIFICATIONS)!=PackageManager.PERMISSION_GRANTED)return;android.content.SharedPreferences p=app.getSharedPreferences("reminders",0);Calendar now=Calendar.getInstance();long time=now.getTimeInMillis();for(String key:new String[] {
-                    "measure","water","bed"
-                }
-                ) {
-                    int hour=key.equals("measure")?8:key.equals("water")?10:22;String marker=key+Formats.day(time);if(p.getBoolean(key,false)&&now.get(Calendar.HOUR_OF_DAY)>=hour&&!p.getBoolean(marker,false)) {
-                        notify(app,key.hashCode(),key.equals("measure")?"Đã đến lúc cập nhật số đo":key.equals("water")?"Ghi nhận nước uống hôm nay":"Chuẩn bị cho giấc ngủ");p.edit().putBoolean(marker,true).apply();
+                WellnessRepository repo=new WellnessRepository(app);
+                repo.refreshHabits();
+                if(Build.VERSION.SDK_INT>=33&&ContextCompat.checkSelfPermission(app,Manifest.permission.POST_NOTIFICATIONS)!=PackageManager.PERMISSION_GRANTED)return;
+                SharedPreferences p=app.getSharedPreferences("reminders",0);
+                Calendar now=Calendar.getInstance();
+                long time=now.getTimeInMillis();
+                String today=Formats.day(time);
+                // Các cờ "đã nhắc" được ghi gộp một lần và dọn các cờ cũ, để file SharedPreferences không phình dần theo ngày.
+                SharedPreferences.Editor edit=p.edit();
+                pruneMarkers(p,edit,today,time);
+                for(int k=0;k<DAILY.length;k++) {
+                    String key=DAILY[k],marker=key+today;
+                    if(p.getBoolean(key,false)&&now.get(Calendar.HOUR_OF_DAY)>=DAILY_HOUR[k]&&!p.getBoolean(marker,false)) {
+                        notify(app,key.hashCode(),DAILY_TEXT[k]);
+                        edit.putBoolean(marker,true);
                     }
                 }
-                if(p.getBoolean("habit",false))for(HabitOccurrence o:repo.dao.upcoming(time-3600000,time)) {
-                    String marker="occurrence_"+o.id;if(!p.getBoolean(marker,false)) {
-                        notify(app,(int)o.id,o.title);p.edit().putBoolean(marker,true).apply();
+                if(p.getBoolean("habit",false))for(HabitOccurrence o:repo.dao.upcoming(time-HOUR_MS,time)) {
+                    String marker="occurrence_"+o.id;
+                    if(!p.contains(marker)) {
+                        notify(app,(int)o.id,o.title);
+                        edit.putLong(marker,o.dueAt);
                     }
                 }
+                edit.apply();
             }
             finally {
                 result.finish();
             }
         }
         );
+    }
+    /** Xóa cờ nhắc hằng ngày của các ngày trước và cờ của lần sinh hoạt đã quá hạn nhắc (giá trị = giờ đến hạn; cờ kiểu cũ không có giờ thì cũng bỏ). */
+    private static void pruneMarkers(SharedPreferences p,SharedPreferences.Editor edit,String today,long time) {
+        for(Map.Entry<String,?> entry:p.getAll().entrySet()) {
+            String k=entry.getKey();
+            if(k.startsWith("occurrence_")) {
+                Object v=entry.getValue();
+                if(!(v instanceof Long)||(Long)v<time-2*HOUR_MS)edit.remove(k);
+                continue;
+            }
+            for(String key:DAILY)if(k.length()>key.length()&&k.startsWith(key)&&!k.endsWith(today))edit.remove(k);
+        }
     }
     private void notify(Context c,int id,String title) {
         PendingIntent open=PendingIntent.getActivity(c,0,new Intent(c,com.example.vitality.MainActivity.class),PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);

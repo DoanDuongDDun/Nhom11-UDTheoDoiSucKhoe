@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="wrap_content" android:clickable="true" android:focusable="true" android:orientation="vertical">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:minHeight="68dp" android:orientation="horizontal">
+        <FrameLayout android:id="@+id/jr_icon_box" android:layout_width="36dp" android:layout_height="36dp">
+            <ImageView android:id="@+id/jr_icon" android:layout_width="19dp" android:layout_height="19dp" android:layout_gravity="center" android:importantForAccessibility="no"/>
+        </FrameLayout>
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="11dp" android:layout_weight="1" android:orientation="vertical">
+            <TextView android:id="@+id/jr_title" android:layout_width="match_parent" android:layout_height="wrap_content" android:ellipsize="end" android:maxLines="1" android:textColor="@color/ink" android:textSize="14sp" android:textStyle="bold"/>
+            <TextView android:id="@+id/jr_detail" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:ellipsize="end" android:maxLines="2" android:textColor="#7F8B84" android:textSize="11sp"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:gravity="end" android:orientation="vertical">
+            <TextView android:id="@+id/jr_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/ink" android:textSize="14sp" android:textStyle="bold"/>
+            <TextView android:id="@+id/jr_time" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:textColor="#7F8B84" android:textSize="11sp"/>
+        </LinearLayout>
+        <TextView android:id="@+id/jr_more" android:layout_width="wrap_content" android:layout_height="wrap_content" android:clickable="true" android:contentDescription="Tùy chọn" android:focusable="true" android:paddingStart="10dp" android:paddingTop="8dp" android:paddingEnd="2dp" android:paddingBottom="8dp" android:text="⋮" android:textColor="#839087" android:textSize="20sp" android:textStyle="bold"/>
+    </LinearLayout>
+    <View android:id="@+id/jr_divider" android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider"/>
+</LinearLayout>
