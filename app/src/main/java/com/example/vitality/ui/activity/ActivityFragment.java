@@ -18,7 +18,7 @@ public class ActivityFragment extends PageFragment {
     @Override
     public void onViewCreated(View v, Bundle b) {
         heading("Hoạt động", "Theo dõi thể chất, bước chân và thời lượng vận động");
-        observeAll(this::render, vm.journals, vm.profile);
+        observeAll(this::render, vm.journals, vm.profile,vm.goals);
     }
 
     private void render() {
@@ -28,7 +28,7 @@ public class ActivityFragment extends PageFragment {
         UserProfile p = vm.profile.getValue();
         long now = System.currentTimeMillis();
         long today = Formats.dayStart(now);
-        double activityGoal = p == null ? 30 : p.activityGoal;
+        double activityGoal = com.example.vitality.utils.GoalProgress.target(vm.goals.getValue(),"activity",p == null ? 30 : p.activityGoal);
 
         double totalMinutes = 0;
         int activityCount = 0;
@@ -56,6 +56,8 @@ public class ActivityFragment extends PageFragment {
                 ? "Tuyệt vời! Bạn đã hoàn thành mục tiêu " + Formats.number(activityGoal) + " phút!"
                 : "Còn " + Formats.number(Math.max(0, activityGoal - totalMinutes)) + " phút nữa để đạt mục tiêu " + Formats.number(activityGoal) + " phút"
         );
+
+        goalProgress("activity");
 
         // Lối tắt thêm nhanh
         card(null, "Thêm nhanh vận động", null, null);
@@ -111,7 +113,7 @@ public class ActivityFragment extends PageFragment {
             endCard();
         }
 
-        button("Quay lại Trang chủ", () -> navigate(R.id.home));
+        
     }
 
     private void addQuickActivity(String name, double minutes) {

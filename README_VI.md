@@ -63,3 +63,11 @@ Không tự nạp dữ liệu mẫu vào database người dùng. Kiểm thử g
 - Quyền thông báo và hành vi tiết kiệm pin khác nhau theo hãng; cần kiểm tra bổ sung trên điện thoại đích.
 
 Tài liệu Android tham khảo: https://developer.android.com/develop/background-work/services/alarms và https://developer.android.com/jetpack/androidx/releases/navigation.
+
+## Mục tiêu cá nhân và hằng ngày
+
+Trang chủ có thẻ Mục tiêu của bạn. Mục tiêu cơ thể gồm cân nặng hoặc vòng eo; lấy số đo gần nhất lúc tạo làm mốc ban đầu. Tiến độ = (hiện tại − ban đầu)/(đích − ban đầu), chặn 0–100%. Nếu đích trùng mốc ban đầu, chỉ đạt khi số đo hiện tại bằng đích trong sai số 0,1.
+
+Mục tiêu daily gồm món ăn/số lần ghi bữa, hoạt động/số phút, nước/ml và ngủ/giờ. Từ khóa tùy chọn lọc tên món hoặc hoạt động (không phân biệt hoa thường/dấu). Mỗi bản ghi món phù hợp tính một lần, không tự hiểu khẩu phần hoặc thành phần dinh dưỡng. Tiến độ ngày là trung bình phần trăm của từng mục tiêu daily, mỗi mục chặn tối đa 100%. Không gộp mục tiêu cơ thể vào điểm daily. Chọn ngày để tính lại từ nhật ký ngày đó. Xóa nhật ký giảm tiến độ; xóa mục tiêu loại mục tiêu khỏi cả các ngày xem lại, không xóa nhật ký. Mục tiêu được chia thành Cơ thể, Ăn uống & nước, Vận động và Giấc ngủ. Mục tiêu nước/ngủ/vận động tổng thay thế giá trị mặc định của hồ sơ trên Trang chủ. Các màn hình Dinh dưỡng, Hoạt động và Giấc ngủ hiển thị tiến độ tính từ cùng nhật ký. Đặt lại cùng loại và từ khóa cập nhật đích đang có. Ví dụ: đặt nước 2.000 ml, ghi 1.000 ml thì cả Trang chủ và Mục tiêu hiển thị 50%.
+
+Room phiên bản 4 thêm bảng goals bằng MIGRATION_3_4. Không xóa dữ liệu cũ. Không tự tạo mục tiêu hoặc bản ghi hoàn thành giả.

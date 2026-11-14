@@ -1,0 +1,9 @@
+package com.example.vitality;
+import android.content.*;import androidx.test.platform.app.InstrumentationRegistry;import androidx.test.ext.junit.runners.AndroidJUnit4;import androidx.navigation.fragment.NavHostFragment;import org.junit.*;import org.junit.runner.RunWith;import static org.junit.Assert.*;import static androidx.test.espresso.Espresso.onView;import static androidx.test.espresso.matcher.ViewMatchers.*;import static androidx.test.espresso.action.ViewActions.scrollTo;import static androidx.test.espresso.assertion.ViewAssertions.matches;import com.example.vitality.data.database.*;import com.example.vitality.data.entity.*;
+@RunWith(AndroidJUnit4.class) public class GoalsIntegrationTest {
+ @Test public void goalAndJournalShowProgress() throws Exception {
+ android.app.Instrumentation inst=InstrumentationRegistry.getInstrumentation();Context c=inst.getTargetContext();VitalityDatabase db=VitalityDatabase.get(c);Goal g=new Goal();g.title="Mục tiêu kiểm thử";g.keyword="goal-integration";g.target=30;long id=db.goals().insert(g);JournalEntry e=new JournalEntry();e.kind="activity";e.note="goal-integration";e.amount=15;long entryId=db.wellness().insert(e);
+ try{MainActivity activity=(MainActivity)inst.startActivitySync(new Intent(c,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK));inst.runOnMainSync(()->((NavHostFragment)activity.getSupportFragmentManager().findFragmentById(R.id.nav_host)).getNavController().navigate(R.id.goals));inst.waitForIdleSync();Thread.sleep(700);onView(withText("Mục tiêu kiểm thử")).perform(scrollTo()).check(matches(isDisplayed()));android.database.Cursor cursor=db.getOpenHelper().getReadableDatabase().query("SELECT target FROM goals WHERE id="+id);assertTrue(cursor.moveToFirst());assertEquals(30,cursor.getDouble(0),0);cursor.close();}
+ finally{g.id=id;db.goals().delete(g);e.id=entryId;db.wellness().delete(e);}
+ }
+}

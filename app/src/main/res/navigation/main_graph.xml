@@ -13,4 +13,4 @@
     <fragment android:id="@+id/habit" android:name="com.example.vitality.ui.habit.HabitFragment"/>
     <fragment android:id="@+id/symptom" android:name="com.example.vitality.ui.symptom.SymptomFragment" android:label="Triệu chứng"/>
     <fragment android:id="@+id/symptomEditor" android:name="com.example.vitality.ui.symptom.SymptomEditorFragment"/>
-</navigation>
+<fragment android:id="@+id/goals" android:name="com.example.vitality.ui.goal.GoalsFragment" android:label="Mục tiêu"/><fragment android:id="@+id/goalEditor" android:name="com.example.vitality.ui.goal.GoalEditorFragment" android:label="Đặt mục tiêu"/></navigation>

@@ -21,7 +21,7 @@ public class HomeFragment extends PageFragment  {
     /** Số đo đã được hoạt họa lên mô hình: render lại vì lý do khác (thêm nước...) không chạy lại hoạt họa từ hình mặc định. */
     private BodyMeasurement shownBody;
     @Override public void onViewCreated(View v,Bundle b) {
-        observeAll(this::render,vm.measurements,vm.journals,vm.profile,vm.occurrences,vm.symptoms);
+        observeAll(this::render,vm.measurements,vm.journals,vm.profile,vm.occurrences,vm.symptoms,vm.goals);
     }
     @Override public void onDestroyView() {
         super.onDestroyView();
@@ -34,6 +34,9 @@ public class HomeFragment extends PageFragment  {
         UserProfile p=vm.profile.getValue();
         long now=System.currentTimeMillis(),today=Formats.dayStart(now);
         double waterGoal=p==null?2000:p.waterGoal,activityGoal=p==null?30:p.activityGoal,sleepGoal=p==null?8:p.sleepGoal;
+        waterGoal=GoalProgress.target(vm.goals.getValue(),"water",waterGoal);
+        activityGoal=GoalProgress.target(vm.goals.getValue(),"activity",activityGoal);
+        sleepGoal=GoalProgress.target(vm.goals.getValue(),"sleep",sleepGoal);
         // Dữ liệu hôm nay
         double water=0,activity=0,sleepMin=0,calories=0;
         int meals=0;
@@ -82,6 +85,13 @@ public class HomeFragment extends PageFragment  {
         binding.content.addView(energy.getRoot());
         energy.energyScore.setText(String.valueOf(score));
         energy.energyStatus.setText(noData?"Chưa có dữ liệu hôm nay · Hãy ghi nhận chỉ số đầu tiên":score>=75?"Tốt · Bạn đang đi đúng hướng":score>=50?"Khá · Gần đạt mục tiêu hôm nay":"Cần cố gắng · Hãy bổ sung nước, vận động và giấc ngủ");
+        List<Goal> goals=vm.goals.getValue();
+        int goalPct=GoalProgress.daily(goals,journal,vm.measurements.getValue(),today);
+        com.example.vitality.databinding.WidgetCardBinding goalCard=card("KẾ HOẠCH CỦA BẠN","Mục tiêu của bạn","Mở",()->navigate(R.id.goals));
+        goalCard.getRoot().setOnClickListener(v->navigate(R.id.goals));
+        if(goals==null||goals.isEmpty())text("Đặt cơ thể mong muốn và kế hoạch ăn uống, chạy bộ mỗi ngày.");
+        else {text("Hôm nay · "+goalPct+"% hoàn thành mục tiêu hằng ngày");android.widget.ProgressBar progress=widget(R.layout.widget_goal_progress);progress.setProgress(goalPct);int bodyCount=0;for(Goal g:goals)if(GoalProgress.body(g))bodyCount++;text(goals.size()+" mục tiêu · "+bodyCount+" mục tiêu cơ thể");}
+        button(goals==null||goals.isEmpty()?"+ Đặt mục tiêu":"Xem tiến độ mục tiêu",()->navigate(R.id.goals));endCard();
         // Lưới chỉ số
         Calendar c=Calendar.getInstance();
         sectionHeading(DAYS[c.get(Calendar.DAY_OF_WEEK)-1]+", "+c.get(Calendar.DAY_OF_MONTH)+" THÁNG "+(c.get(Calendar.MONTH)+1),"Chỉ số của bạn","Xem tất cả",()->navigate(R.id.statistics));
@@ -89,14 +99,19 @@ public class HomeFragment extends PageFragment  {
         binding.content.addView(grid.getRoot());
         LinearLayout row1=row(grid.metricGrid),row2=row(grid.metricGrid),row3=row(grid.metricGrid);
         int activityPct=activityGoal>0?(int)Math.min(100,Math.round(activity/activityGoal*100)):0;
-        CardMetricBinding act=metric(row1,R.drawable.ic_shoe,R.drawable.bg_icon_mint,0xFF1D9367,"Vận động",Formats.number(activity),"phút",activityPct+"% mục tiêu "+Formats.number(activityGoal)+" phút",WHITE_CARD,()->navigate(R.id.diary));
+        CardMetricBinding act=metric(row1,R.drawable.ic_shoe,R.drawable.bg_icon_mint,0xFF1D9367,"Vận động",Formats.number(activity),"phút",activityPct+"% mục tiêu "+Formats.number(activityGoal)+" phút",WHITE_CARD,()->navigate(R.id.activity));
         act.metricProgress.setVisibility(View.VISIBLE);
         act.metricProgress.setProgress(activityPct);
         int sleepH=(int)(sleepMin/60),sleepM=(int)Math.round(sleepMin%60);
         metric(row1,R.drawable.ic_moon,R.drawable.bg_icon_violet,0xFF7360DD,"Giấc ngủ",String.format(Locale.getDefault(),"%dh %02dp",sleepH,sleepM),"",sleepMin==0?"Chưa ghi nhận hôm nay":sleepMin/60>=sleepGoal?"Đạt mục tiêu ngủ":"Mục tiêu "+Formats.number(sleepGoal)+" giờ",SLEEP_CARD,()->navigate(R.id.sleep));
-        metric(row2,R.drawable.ic_flame,R.drawable.bg_icon_orange,0xFFEB791F,"Calo",String.format(Locale.getDefault(),"%,.0f",calories),"kcal","Đã nạp hôm nay (nhập tay)",CALORIE_CARD,()->navigate(R.id.diary));
+        metric(row2,R.drawable.ic_flame,R.drawable.bg_icon_orange,0xFFEB791F,"Calo",String.format(Locale.getDefault(),"%,.0f",calories),"kcal","Đã nạp hôm nay (nhập tay)",CALORIE_CARD,()->navigate(R.id.nutrition));
         int total=Math.max(1,Math.min(12,(int)Math.ceil(waterGoal/GLASS_ML))),drunk=(int)(water/GLASS_ML);
         CardMetricBinding wat=metric(row2,R.drawable.ic_drop,R.drawable.bg_icon_blue,0xFF3785DC,"Nước",String.valueOf(drunk),"/ "+total+" ly",Formats.number(water)+" / "+Formats.number(waterGoal)+" ml · chạm để thêm 250 ml",WHITE_CARD,this::addWater);
+        wat.metricProgress.setVisibility(View.VISIBLE);
+        int waterPct=(int)Math.min(100,Math.round(water/waterGoal*100));wat.metricProgress.setProgress(waterPct);
+        wat.metricCaption.setText(Formats.number(water)+" / "+Formats.number(waterGoal)+" ml · "+waterPct+"% · Chạm để ghi nước uống");
+        wat.getRoot().setOnClickListener(v->com.example.vitality.ui.diary.JournalEditorDialog.create("water",0).show(getParentFragmentManager(),"water_entry"));
+        wat.metricPill.setOnClickListener(v->addWater());
         wat.metricPill.setVisibility(View.VISIBLE);
         wat.metricPill.setText("+ 1 ly");
         wat.metricGlasses.setVisibility(View.VISIBLE);
@@ -116,7 +131,7 @@ public class HomeFragment extends PageFragment  {
         }
         else if(hasBody)weightCaption="Lần đo đầu tiên";
         metric(row3,R.drawable.ic_scale,R.drawable.bg_icon_peach,0xFFDF7160,"Cân nặng",hasBody?Formats.number(rows.get(0).weightKg):"–","kg",weightCaption,WHITE_CARD,()->navigate(R.id.body));
-        metric(row3,R.drawable.ic_fork,R.drawable.bg_icon_lime,0xFF618E27,"Bữa ăn",String.valueOf(meals),"/ "+MEAL_TARGET+" bữa",meals>=MEAL_TARGET?"Đã ghi đủ các bữa":"Ghi lại bữa ăn tiếp theo",WHITE_CARD,()->navigate(R.id.diary));
+        metric(row3,R.drawable.ic_fork,R.drawable.bg_icon_lime,0xFF618E27,"Bữa ăn",String.valueOf(meals),"/ "+MEAL_TARGET+" bữa",meals>=MEAL_TARGET?"Đã ghi đủ các bữa":"Ghi lại bữa ăn tiếp theo",WHITE_CARD,()->navigate(R.id.nutrition));
         // Thẻ triệu chứng
         WidgetHomeSymptomBinding sym=WidgetHomeSymptomBinding.inflate(getLayoutInflater(),binding.content,false);
         binding.content.addView(sym.getRoot());

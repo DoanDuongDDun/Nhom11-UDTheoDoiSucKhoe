@@ -80,6 +80,22 @@ public abstract class PageFragment extends Fragment  {
         target=c.cardBody;
         return c;
     }
+    protected void goalProgress(String... kinds) {
+        java.util.List<com.example.vitality.data.entity.Goal> goals=vm.goals.getValue();
+        if(goals==null)return;
+        for(com.example.vitality.data.entity.Goal goal:goals) {
+            if(!java.util.Arrays.asList(kinds).contains(goal.kind))continue;
+            double current=GoalProgress.current(goal,vm.journals.getValue(),vm.measurements.getValue(),System.currentTimeMillis());
+            int percent=GoalProgress.percent(goal,current);
+            card("MỤC TIÊU HÔM NAY",goal.title,"Quản lý",()->navigate(R.id.goals));
+            text(Formats.number(current)+" / "+Formats.number(goal.target)+" "+GoalProgress.unit(goal)+" · "+percent+"%");
+            ProgressBar progress=widget(R.layout.widget_goal_progress);
+            progress.setProgress(percent);
+            progress.setContentDescription("Hoàn thành "+percent+" phần trăm");
+            if("water".equals(goal.kind))button("Ghi lượng nước vừa uống",()->com.example.vitality.ui.diary.JournalEditorDialog.create("water",0).show(getParentFragmentManager(),"water_entry"));
+            endCard();
+        }
+    }
     protected void endCard() {
         target=null;
     }
@@ -105,6 +121,10 @@ public abstract class PageFragment extends Fragment  {
     @Override public void onStart() {
         super.onStart();
         if(binding==null||avatarObserved)return;
+        androidx.navigation.NavController controller=NavHostFragment.findNavController(this);
+        boolean isHome=controller.getCurrentDestination()!=null&&controller.getCurrentDestination().getId()==R.id.home;
+        binding.homeReturn.setVisibility(isHome?View.GONE:View.VISIBLE);
+        binding.homeReturn.setOnClickListener(v->goHome());
         avatarObserved=true;
         binding.avatar.setOnClickListener(v-> {
             androidx.navigation.NavController nav=NavHostFragment.findNavController(this);
@@ -168,6 +188,14 @@ public abstract class PageFragment extends Fragment  {
     }
     protected String n(Double d) {
         return d==null?"":Formats.number(d);
+    }
+    protected void goHome() {
+        androidx.navigation.NavController nav=NavHostFragment.findNavController(this);
+        if(nav.getCurrentDestination()!=null&&nav.getCurrentDestination().getId()==R.id.home)return;
+        if(!nav.popBackStack(R.id.home,false)) {
+            nav.navigate(R.id.home,null,new androidx.navigation.NavOptions.Builder()
+                    .setPopUpTo(R.id.main_graph,false).setLaunchSingleTop(true).build());
+        }
     }
     protected void navigate(int id) {
         NavHostFragment.findNavController(this).navigate(id);

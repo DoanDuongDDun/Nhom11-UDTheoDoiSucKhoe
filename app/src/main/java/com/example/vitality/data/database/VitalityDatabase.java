@@ -6,12 +6,14 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.example.vitality.data.entity.*;
 import com.example.vitality.data.dao.*;
 @Database(entities= {
-    BodyMeasurement.class,JournalEntry.class,UserProfile.class,HabitSchedule.class,HabitOccurrence.class,Symptom.class
+    BodyMeasurement.class,JournalEntry.class,UserProfile.class,HabitSchedule.class,HabitOccurrence.class,Symptom.class,Goal.class
 }
-,version=3,exportSchema=true) public abstract class VitalityDatabase extends RoomDatabase  {
+,version=4,exportSchema=true) public abstract class VitalityDatabase extends RoomDatabase  {
     public abstract BodyMeasurementDao measurements();
     public abstract WellnessDao wellness();
     public abstract SymptomDao symptoms();
+    public abstract GoalDao goals();
+    public static final Migration MIGRATION_3_4=new Migration(3,4){public void migrate(SupportSQLiteDatabase db){db.execSQL("CREATE TABLE IF NOT EXISTS goals (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,kind TEXT,title TEXT,keyword TEXT,target REAL NOT NULL,baseline REAL NOT NULL,createdAt INTEGER NOT NULL)");}};
     public static final Migration MIGRATION_1_2=new Migration(1,2) {
         public void migrate(SupportSQLiteDatabase db) {
             db.execSQL("CREATE TABLE IF NOT EXISTS journal (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,kind TEXT,title TEXT,category TEXT,portion TEXT,note TEXT,startedAt INTEGER NOT NULL,endedAt INTEGER,amount REAL NOT NULL,awakeMinutes REAL NOT NULL,calories REAL,distanceKm REAL,quality INTEGER NOT NULL)");
@@ -34,7 +36,7 @@ import com.example.vitality.data.dao.*;
     private static volatile VitalityDatabase instance;
     public static VitalityDatabase get(Context c) {
         if(instance==null)synchronized(VitalityDatabase.class) {
-            if(instance==null)instance=Room.databaseBuilder(c.getApplicationContext(),VitalityDatabase.class,"vitality.db").addMigrations(MIGRATION_1_2,MIGRATION_2_3).build();
+            if(instance==null)instance=Room.databaseBuilder(c.getApplicationContext(),VitalityDatabase.class,"vitality.db").addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4).build();
         }
         return instance;
     }

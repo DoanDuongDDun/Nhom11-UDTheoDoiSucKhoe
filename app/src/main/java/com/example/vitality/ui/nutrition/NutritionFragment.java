@@ -18,7 +18,7 @@ public class NutritionFragment extends PageFragment {
     @Override
     public void onViewCreated(View v, Bundle b) {
         heading("Dinh dưỡng", "Quản lý khẩu phần ăn và lượng Calo tiêu thụ");
-        observeAll(this::render, vm.journals, vm.profile);
+        observeAll(this::render, vm.journals, vm.profile, vm.goals);
     }
 
     private void render() {
@@ -55,6 +55,8 @@ public class NutritionFragment extends PageFragment {
             "kcal",
             mealCount == 0 ? "Chưa có món ăn nào hôm nay" : "Đã ghi nhận " + mealCount + " bữa ăn"
         );
+
+        goalProgress("nutrition", "water");
 
         // Form thêm món ăn
         card(null, "Thêm món ăn mới", null, null);
@@ -105,6 +107,6 @@ public class NutritionFragment extends PageFragment {
             endCard();
         }
 
-        button("Quay lại Trang chủ", () -> navigate(R.id.home));
+        
     }
 }
