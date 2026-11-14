@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/card" android:orientation="vertical">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+            <TextView android:id="@+id/body_kicker" android:layout_width="wrap_content" android:layout_height="wrap_content" android:letterSpacing="0.08" android:text="LẦN ĐO GẦN NHẤT" android:textColor="#87929B" android:textSize="10sp" android:textStyle="bold"/>
+            <TextView android:id="@+id/body_date" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:textColor="@color/ink" android:textSize="18sp" android:textStyle="bold"/>
+        </LinearLayout>
+        <TextView android:id="@+id/body_edit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@drawable/bg_pill_green" android:clickable="true" android:focusable="true" android:paddingStart="12dp" android:paddingTop="7dp" android:paddingEnd="12dp" android:paddingBottom="7dp" android:text="Sửa" android:textColor="#44705F" android:textSize="12sp" android:textStyle="bold"/>
+    </LinearLayout>
+    <com.example.vitality.graphics.BodyShapeView android:id="@+id/body_shape" android:layout_width="match_parent" android:layout_height="300dp" android:layout_marginTop="6dp"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:orientation="horizontal" android:paddingTop="14dp" android:weightSum="3">
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center_horizontal" android:orientation="vertical">
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="bottom" android:orientation="horizontal">
+                <TextView android:id="@+id/num1_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="–" android:textColor="@color/ink" android:textSize="20sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/num1_unit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="3dp" android:layout_marginBottom="3dp" android:text="kg" android:textColor="#7D8982" android:textSize="11sp" android:textStyle="bold"/>
+            </LinearLayout>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:text="Cân nặng" android:textColor="#85918A" android:textSize="11sp"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center_horizontal" android:orientation="vertical">
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="bottom" android:orientation="horizontal">
+                <TextView android:id="@+id/num2_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="–" android:textColor="@color/ink" android:textSize="20sp" android:textStyle="bold"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="3dp" android:layout_marginBottom="3dp" android:text="BMI" android:textColor="#7D8982" android:textSize="11sp" android:textStyle="bold"/>
+            </LinearLayout>
+            <TextView android:id="@+id/num2_label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:text="Chỉ số tham khảo" android:textColor="#85918A" android:textSize="11sp"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center_horizontal" android:orientation="vertical">
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="bottom" android:orientation="horizontal">
+                <TextView android:id="@+id/num3_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="–" android:textColor="@color/ink" android:textSize="20sp" android:textStyle="bold"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="3dp" android:layout_marginBottom="3dp" android:text="cm" android:textColor="#7D8982" android:textSize="11sp" android:textStyle="bold"/>
+            </LinearLayout>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:text="Vòng eo" android:textColor="#85918A" android:textSize="11sp"/>
+        </LinearLayout>
+    </LinearLayout>
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="12dp" android:background="@color/divider"/>
+    <TextView android:id="@+id/body_note" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:gravity="center" android:textColor="#939D97" android:textSize="11sp"/>
+</LinearLayout>

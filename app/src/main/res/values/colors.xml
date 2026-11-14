@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Bảng màu Vitality: đỏ cho hành động chính, xanh lá cho dữ liệu/điều hướng, xanh dương cho thẻ Trang chủ -->
+    <color name="primary">#D64545</color>
+    <color name="primary_dark">#A92F36</color>
+    <color name="primary_light">#FBE9E9</color>
+    <color name="green">#2E8C68</color>
+    <color name="green_dark">#266B53</color>
+    <color name="green_light">#E6F2EB</color>
+    <color name="mint_dark">#1D9367</color>
+    <color name="nav_active">#1E604A</color>
+    <color name="nav_inactive">#87929E</color>
+    <color name="nav_indicator">#C7F0DC</color>
+    <color name="background">#EAF3F0</color>
+    <color name="ink">#172133</color>
+    <color name="muted">#718096</color>
+    <color name="divider">#E7ECE7</color>
+    <!-- Tên cũ giữ lại cho tài nguyên cũ -->
+    <color name="red">@color/primary</color>
+    <color name="red_dark">@color/primary_dark</color>
+    <color name="red_light">@color/primary_light</color>
+</resources>

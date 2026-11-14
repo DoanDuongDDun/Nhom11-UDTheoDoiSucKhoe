@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="wrap_content" android:clickable="true" android:focusable="true" android:orientation="vertical">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:minHeight="62dp" android:orientation="horizontal">
+        <FrameLayout android:id="@+id/tool_icon_box" android:layout_width="36dp" android:layout_height="36dp">
+            <ImageView android:id="@+id/tool_icon" android:layout_width="19dp" android:layout_height="19dp" android:layout_gravity="center" android:importantForAccessibility="no"/>
+        </FrameLayout>
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="11dp" android:layout_weight="1" android:orientation="vertical">
+            <TextView android:id="@+id/tool_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/ink" android:textSize="14sp" android:textStyle="bold"/>
+            <TextView android:id="@+id/tool_sub" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:textColor="#7D8A82" android:textSize="11sp"/>
+        </LinearLayout>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="›" android:textColor="#829087" android:textSize="22sp"/>
+    </LinearLayout>
+    <View android:id="@+id/tool_divider" android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider"/>
+</LinearLayout>
