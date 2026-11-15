@@ -7,6 +7,8 @@
     <fragment android:id="@+id/diary" android:name="com.example.vitality.ui.diary.DiaryFragment" android:label="Nhật ký"/>
     <fragment android:id="@+id/statistics" android:name="com.example.vitality.ui.statistics.StatisticsFragment" android:label="Thống kê"/>
     <fragment android:id="@+id/profile" android:name="com.example.vitality.ui.profile.ProfileFragment" android:label="Cá nhân"/>
+    <fragment android:id="@+id/notificationSettings" android:name="com.example.vitality.ui.notification.NotificationSettingsFragment" android:label="Thông báo"/>
+    <fragment android:id="@+id/healthDataExport" android:name="com.example.vitality.ui.export.HealthDataExportFragment" android:label="Dữ liệu sức khỏe"/>
     <fragment android:id="@+id/measurementEditor" android:name="com.example.vitality.ui.body.MeasurementEditorFragment"/>
     <fragment android:id="@+id/comparison" android:name="com.example.vitality.ui.body.ComparisonFragment"/>
     <fragment android:id="@+id/period" android:name="com.example.vitality.ui.period.PeriodFragment" android:label="Chu kỳ kinh nguyệt"/>

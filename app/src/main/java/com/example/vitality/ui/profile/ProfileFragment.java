@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import com.google.android.material.textfield.TextInputEditText;
 import java.util.*;
 import com.example.vitality.databinding.*;
+import com.example.vitality.R;
 import com.example.vitality.ui.main.PageFragment;
 import com.example.vitality.data.entity.*;
 import com.example.vitality.notification.ReminderScheduler;
@@ -55,6 +56,11 @@ public class ProfileFragment extends PageFragment  {
     private void build(UserProfile profile,Bundle state) {
         summary=WidgetProfileSummaryBinding.inflate(getLayoutInflater(),binding.content,false);
         binding.content.addView(summary.getRoot());
+        card(null,"Cài đặt và dữ liệu",null,null);
+        button("Cài đặt thông báo",()->navigate(R.id.notificationSettings));
+        button("Xem và xuất dữ liệu sức khỏe",()->navigate(R.id.healthDataExport));
+        button("Chu kỳ sinh hoạt",()->navigate(R.id.habit));
+        endCard();
         // Hồ sơ
         card("THÔNG TIN CƠ BẢN","Hồ sơ của bạn",null,null);
         fields.add(field("Tên / biệt danh",profile.name,false));
@@ -100,9 +106,6 @@ public class ProfileFragment extends PageFragment  {
             }
             ,{
                 "bed","Đi ngủ","22:00 • Hằng ngày"
-            }
-            ,{
-                "habit","Lịch sinh hoạt","Theo lịch bạn đã đặt"
             }
         }
         ;

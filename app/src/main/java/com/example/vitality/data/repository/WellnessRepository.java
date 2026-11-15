@@ -3,6 +3,7 @@ import android.content.Context;
 import com.example.vitality.data.database.VitalityDatabase;
 import com.example.vitality.data.dao.WellnessDao;
 import com.example.vitality.data.entity.*;
+import com.example.vitality.notification.HealthNotificationEvents;
 import com.example.vitality.utils.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -13,20 +14,29 @@ public class WellnessRepository  {
     public final WellnessDao dao;
     public final com.example.vitality.data.dao.PeriodDao periods;
     private final VitalityDatabase db;
+    private final Context app;
     public WellnessRepository(Context c) {
+        app=c.getApplicationContext();
         db=VitalityDatabase.get(c);
         dao=db.wellness();periods=db.periods();
     }
     public void saveJournal(JournalEntry e) {
+        JournalEntry[] before={null};
+        long[] savedId={e.id};
         db.runInTransaction(()-> {
             if(e.kind.equals("sleep")) {
                 if(e.endedAt!=null)HealthMath.sleepMinutes(e.startedAt,e.endedAt,e.awakeMinutes);
                 if(e.endedAt==null&&dao.activeSleepsExcept(e.id)>0)throw new IllegalArgumentException("Đã có một phiên ngủ đang hoạt động");
                 if(dao.overlappingSleeps(e.id,e.startedAt,e.endedAt==null?Long.MAX_VALUE:e.endedAt)>0)throw new IllegalArgumentException("Khoảng ngủ trùng với phiên đã lưu");
             }
-            if(e.id==0)dao.insert(e);else dao.update(e);
+            if(e.id==0)savedId[0]=dao.insert(e);
+            else {
+                before[0]=dao.journal(e.id);
+                dao.update(e);
+            }
         }
         );
+        if(e.id==0||before[0]!=null)HealthNotificationEvents.journalSaved(app,db,e,savedId[0],before[0]);
     }
     public void savePeriod(PeriodEntry e) {
         db.runInTransaction(() -> {
