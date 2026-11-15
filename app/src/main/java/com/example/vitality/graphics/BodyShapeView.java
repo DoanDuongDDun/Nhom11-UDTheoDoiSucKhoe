@@ -45,7 +45,7 @@ public class BodyShapeView extends View  {
     }
     @Override protected void onDraw(Canvas c) {
         super.onDraw(c);
-        float scale=Math.min(getWidth()/115f,getHeight()/260f);
+        float scale=Math.min(getWidth()/drawingWidth(shape),getHeight()/260f);
         drawBody(c,shape,getWidth()/2f,getHeight()-12,scale,0xffD64545,255);
     }
     /** Hình học đã dựng (đường viền và các nét chi tiết) cho một bộ thông số; chỉ phụ thuộc vào thông số, không phụ thuộc vị trí/tỷ lệ/màu. */
@@ -65,6 +65,13 @@ public class BodyShapeView extends View  {
         }
         return g;
     }
+    public static float drawingWidth(BodyShapeParameters p) {
+        float factor=180f/p.height;
+        float hip=Math.min(p.hip*factor/2,28);
+        float thigh=p.thigh*factor/2,calf=p.calf*factor/2;
+        float center=Math.max(hip*.53f,thigh+1);
+        return Math.max(115f,(center+Math.max(thigh,Math.max(calf,10))+4)*2/factor);
+    }
     private static Geometry buildGeometry(BodyShapeParameters p) {
         Geometry g=new Geometry();
         float factor=180f/p.height;
@@ -72,8 +79,8 @@ public class BodyShapeView extends View  {
         float hip=Math.min(p.hip*factor/2,28);
         float shoulder=Math.max(chest+2,Math.max(waist,hip)*.88f+3);
         float arm=Math.min(p.arm*factor/2,8);
-        float thigh=Math.min(p.thigh*factor/2,hip*.47f);
-        float calf=Math.min(p.calf*factor/2,thigh*.85f);
+        float thigh=p.thigh*factor/2;
+        float calf=p.calf*factor/2;
         float legCenter=Math.max(hip*.53f,thigh+1);
         Path silhouette=g.silhouette;
         // Skull, jaw and neck flow directly into the trapezius and shoulders.
