@@ -43,7 +43,10 @@ public final class HealthDataReader {
                 }
             }
             if (filter.type == Type.ALL || filter.type.journalKind != null) {
-                for (JournalEntry entry : db.wellness().journalBetween(filter.type.journalKind, from, until)) {
+                List<JournalEntry> journal = filter.type == Type.ACTIVITY
+                        ? db.wellness().activityBetween(from, until)
+                        : db.wellness().journalBetween(filter.type.journalKind, from, until);
+                for (JournalEntry entry : journal) {
                     addJournal(records, tables, entry);
                 }
             }
@@ -113,7 +116,7 @@ public final class HealthDataReader {
                 addRow(tables, HealthDataTable.WATER, entry.startedAt, entry.startedAt, entry.amount, entry.note);
                 break;
             case "activity":
-                String activity = firstNotBlank(entry.title, entry.note, "Hoạt động");
+                String activity = entry.nameOr("Hoạt động");
                 String activityNote = join(activity, entry.note);
                 journal(rows, Type.ACTIVITY, entry, "Thời lượng", entry.amount, "phút", entry.startedAt, activityNote);
                 if (entry.distanceKm != null) journal(rows, Type.ACTIVITY, entry,
@@ -121,10 +124,16 @@ public final class HealthDataReader {
                 if (entry.calories != null) journal(rows, Type.ACTIVITY, entry,
                         "Calo tiêu thụ", entry.calories, "kcal", entry.startedAt, activityNote);
                 addRow(tables, HealthDataTable.ACTIVITY, entry.startedAt, entry.startedAt,
-                        activity, entry.amount, entry.distanceKm, entry.calories, entry.note);
+                        activity, entry.amount, entry.distanceKm, entry.calories, entry.note, null);
+                break;
+            case JournalEntry.KIND_STEPS:
+                long steps = Math.round(entry.amount);
+                journal(rows, Type.ACTIVITY, entry, "Số bước", steps, "bước", entry.startedAt, entry.note);
+                addRow(tables, HealthDataTable.ACTIVITY, entry.startedAt, entry.startedAt,
+                        entry.nameOr("Bước chân"), null, null, null, entry.note, steps);
                 break;
             case "nutrition":
-                String meal = firstNotBlank(entry.title, entry.note, "Bữa ăn");
+                String meal = entry.nameOr("Bữa ăn");
                 String mealNote = join(join(entry.category, entry.portion), entry.note);
                 journal(rows, Type.NUTRITION, entry, "Món ăn", meal, "", entry.startedAt, mealNote);
                 if (entry.calories != null) journal(rows, Type.NUTRITION, entry,
@@ -150,11 +159,6 @@ public final class HealthDataReader {
     private static void journal(List<HealthDataRecord> rows, Type type, JournalEntry entry,
                                 String metric, Object value, String unit, long time, String note) {
         rows.add(new HealthDataRecord(type, entry.id, metric, value, unit, time, note));
-    }
-
-    private static String firstNotBlank(String one, String two, String fallback) {
-        if (one != null && !one.trim().isEmpty()) return one;
-        return two == null || two.trim().isEmpty() ? fallback : two;
     }
 
     private static String join(String first, String second) {

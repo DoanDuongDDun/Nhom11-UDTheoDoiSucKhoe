@@ -8,7 +8,6 @@
     <string name="health_export_through_value">Đến %1$s</string>
     <string name="health_export_view">Xem dữ liệu</string>
     <string name="health_export_save_excel">Xuất Excel</string>
-    <string name="health_export_save_csv">Xuất CSV</string>
     <string name="health_export_record_count">%1$d dòng xem trước</string>
 
     <style name="ThemeOverlay.Vitality.Export" parent="">

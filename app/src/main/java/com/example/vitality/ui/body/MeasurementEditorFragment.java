@@ -31,7 +31,7 @@ public class MeasurementEditorFragment extends PageFragment  {
     }
     private void build(Bundle state) {
         card(id==0?"LẦN ĐO MỚI":"CHỈNH SỬA","Số đo cơ thể",null,null);
-        time=field("Ngày giờ đo (dd/MM/yyyy HH:mm)",Formats.date(original.measuredAt),false);
+        time=field("Ngày giờ đo (dd/mm/yyyy HH:mm)",Formats.date(original.measuredAt),false);
         String[] names= {
             "Chiều cao (cm)","Cân nặng (kg)","Vòng ngực (cm)","Vòng eo (cm)","Vòng hông (cm)","Cánh tay (cm, tùy chọn)","Đùi (cm, tùy chọn)","Bắp chân (cm, tùy chọn)"
         }

@@ -1,4 +1,5 @@
 package com.example.vitality.utils;
+import com.example.vitality.data.entity.JournalEntry;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,6 +34,12 @@ public final class Formats  {
     private static final Cached DATE_TIME=new Cached("dd/MM/yyyy HH:mm"),DAY=new Cached("dd/MM/yyyy"),CLOCK=new Cached("HH:mm"),SHORT=new Cached("dd/MM HH:mm");
     public static String number(double n) {
         return String.format(Locale.getDefault(),"%.1f",n);
+    }
+    public static String activityAmount(JournalEntry entry) {
+        if (JournalEntry.KIND_STEPS.equals(entry.kind)) {
+            return String.format(Locale.getDefault(), "%,d bước", Math.round(entry.amount));
+        }
+        return number(entry.amount) + " phút";
     }
     public static String date(long t) {
         return DATE_TIME.format(t);

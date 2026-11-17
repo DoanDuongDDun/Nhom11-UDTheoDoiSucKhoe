@@ -2,30 +2,22 @@ package com.example.vitality.ui.profile;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
-import android.os.Build;
-import android.Manifest;
-import androidx.activity.result.*;
-import androidx.activity.result.contract.ActivityResultContracts;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import java.util.*;
 import com.example.vitality.databinding.*;
 import com.example.vitality.R;
 import com.example.vitality.ui.main.PageFragment;
 import com.example.vitality.data.entity.*;
-import com.example.vitality.notification.ReminderScheduler;
 import com.example.vitality.utils.*;
-/** Cá nhân: thẻ tóm tắt, hồ sơ, mục tiêu và nhắc nhở theo bố cục demo; logic lưu hồ sơ và nhắc nhở giữ nguyên. */
+/** Cá nhân: tóm tắt, hồ sơ và cài đặt. */
 public class ProfileFragment extends PageFragment  {
     private boolean loaded;
     private final List<TextInputEditText> fields=new ArrayList<>();
     private WidgetProfileSummaryBinding summary;
     private int template,gender;
-    private final ActivityResultLauncher<String> permission=registerForActivityResult(new ActivityResultContracts.RequestPermission(),granted-> {
-        vm.message.setValue(granted?"Đã cấp quyền thông báo":"Chưa cấp quyền thông báo; nhật ký vẫn hoạt động");ReminderScheduler.schedule(requireContext());
-    }
-    );
     @Override public void onViewCreated(View v,Bundle state) {
-        heading("Cá nhân","Hồ sơ, mục tiêu và nhắc nhở");
+        heading("Cá nhân","Hồ sơ và cài đặt");
         vm.profile.observe(getViewLifecycleOwner(),p-> {
             if(!loaded) {
                 loaded=true;build(p==null?new UserProfile():p,state);
@@ -64,7 +56,9 @@ public class ProfileFragment extends PageFragment  {
         // Hồ sơ
         card("THÔNG TIN CƠ BẢN","Hồ sơ của bạn",null,null);
         fields.add(field("Tên / biệt danh",profile.name,false));
-        fields.add(field("Ngày sinh (dd/MM/yyyy, tùy chọn)",profile.birthday,false));
+        TextInputEditText birthdayField = field("Ngày sinh (dd/mm/yyyy, tùy chọn)",profile.birthday,false);
+        fields.add(birthdayField);
+        TextInputLayout birthdayInput = (TextInputLayout) birthdayField.getParent().getParent();
         String[] genders= {
             "Không cung cấp","Nữ","Nam","Khác"
         }
@@ -79,71 +73,23 @@ public class ProfileFragment extends PageFragment  {
         }
         ,x->template=x).setSelection(template);
         endCard();
-        // Mục tiêu
-        card("MỤC TIÊU","Chỉ số mỗi ngày",null,null);
-        fields.add(field("Mục tiêu cân nặng (kg, tùy chọn)",n(profile.targetWeight),true));
-        fields.add(field("Mục tiêu vòng eo (cm, tùy chọn)",n(profile.targetWaist),true));
-        fields.add(field("Mục tiêu nước (ml/ngày)",n(profile.waterGoal),true));
-        fields.add(field("Mục tiêu vận động (phút/ngày)",n(profile.activityGoal),true));
-        fields.add(field("Mục tiêu ngủ (giờ/ngày)",n(profile.sleepGoal),true));
-        endCard();
         if(state!=null)for(int i=0;i<fields.size();i++)fields.get(i).setText(state.getString("f"+i));
-        // Nhắc nhở
-        WidgetCardBinding reminders=card("NHẮC NHỞ","Lịch chăm sóc sức khỏe",null,null);
-        endCard();
-        TextView note=new TextView(requireContext());
-        note.setText("Android có thể gửi trễ do tiết kiệm pin. Từ chối quyền thông báo không ảnh hưởng việc lưu nhật ký.");
-        note.setTextSize(12);
-        note.setTextColor(0xFF718096);
-        note.setPadding(0,dp(6),0,dp(6));
-        reminders.cardBody.addView(note);
-        String[][] items= {
-            {
-                "measure","Đo cơ thể","08:00 • Hằng ngày"
-            }
-            ,{
-                "water","Uống nước","10:00 • Hằng ngày"
-            }
-            ,{
-                "bed","Đi ngủ","22:00 • Hằng ngày"
-            }
-        }
-        ;
-        android.content.SharedPreferences prefs=requireContext().getSharedPreferences("reminders",0);
-        for(int i=0;i<items.length;i++) {
-            String key=items[i][0],title=items[i][1];
-            ItemReminderRowBinding r=ItemReminderRowBinding.inflate(getLayoutInflater(),reminders.cardBody,false);
-            reminders.cardBody.addView(r.getRoot());
-            r.remTitle.setText(title);
-            r.remSub.setText(items[i][2]);
-            if(i==items.length-1)r.remDivider.setVisibility(View.GONE);
-            r.remSwitch.setChecked(prefs.getBoolean(key,false));
-            r.remSwitch.setOnCheckedChangeListener((btn,checked)-> {
-                prefs.edit().putBoolean(key,checked).apply();
-                if(checked&&Build.VERSION.SDK_INT>=33)permission.launch(Manifest.permission.POST_NOTIFICATIONS);
-                ReminderScheduler.schedule(requireContext());
-                vm.message.setValue(title+": "+(checked?"Đã bật":"Đã tắt"));
-            }
-            );
-        }
         button("Lưu hồ sơ",()-> {
+            String birthday = value(birthdayField);
             try {
-                UserProfile x=new UserProfile();
-                x.name=value(fields.get(0));
-                x.birthday=value(fields.get(1));
-                if(!x.birthday.isEmpty()&&Validation.date(x.birthday+" 00:00")>System.currentTimeMillis())throw new IllegalArgumentException("Ngày sinh không được ở tương lai");
-                x.gender=genders[Math.max(0,gender)];
-                x.bodyTemplate=template;
-                x.targetWeight=optional(fields.get(2),2,500);
-                x.targetWaist=optional(fields.get(3),20,250);
-                x.waterGoal=number(fields.get(4),100,10000);
-                x.activityGoal=number(fields.get(5),1,1440);
-                x.sleepGoal=number(fields.get(6),1,24);
-                vm.run(()->vm.wellness.dao.save(x),true);
+                if (!birthday.isEmpty() && Validation.dateOnly(birthday) > System.currentTimeMillis()) {
+                    throw new IllegalArgumentException("Ngày sinh không được ở tương lai");
+                }
+            } catch (IllegalArgumentException invalid) {
+                birthdayInput.setError(invalid.getMessage());
+                birthdayField.requestFocus();
+                return;
             }
-            catch(Exception e) {
-                vm.message.setValue(e.getMessage());
-            }
+            birthdayInput.setError(null);
+            String name=value(fields.get(0));
+            String selectedGender=genders[Math.max(0,gender)];
+            int selectedTemplate=template;
+            vm.run(()->vm.wellness.saveProfileDetails(name,birthday,selectedGender,selectedTemplate),true);
         }
         );
         TextView privacy=text("Dữ liệu chỉ lưu trên thiết bị. BMI hiển thị giá trị, không dùng để chẩn đoán.");

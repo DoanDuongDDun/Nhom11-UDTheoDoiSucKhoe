@@ -35,7 +35,7 @@ public class HabitEditorDialog extends DialogFragment  {
         String days="";
         for(int i=0;i<7;i++)if((old.weekdays&(1<<i))!=0)days+=(i+2)+",";
         String[] labels= {
-            "Tên lịch","Nội dung","Giờ nhắc HH:mm","Ngày trong tuần: 2,3,4,5,6,7,8 (8 = CN)","Bắt đầu dd/MM/yyyy HH:mm","Kết thúc (tùy chọn) dd/MM/yyyy HH:mm"
+            "Tên lịch","Nội dung","Giờ nhắc HH:mm","Ngày trong tuần: 2,3,4,5,6,7,8 (8 = CN)","Bắt đầu dd/mm/yyyy HH:mm","Kết thúc (tùy chọn) dd/mm/yyyy HH:mm"
         }
         ;
         String[] values= {

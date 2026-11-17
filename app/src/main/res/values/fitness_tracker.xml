@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fitness_tracker_title">Hoạt động</string>
+    <string name="fitness_tracker_description">Theo dõi bước chân và thời gian tập luyện</string>
+    <string name="fitness_tracker_today">Hôm nay</string>
+    <string name="fitness_tracker_steps_title">Bước chân</string>
+    <string name="fitness_tracker_workout_title">Thời gian tập</string>
+    <string name="fitness_tracker_steps_value">%1$s bước</string>
+    <string name="fitness_tracker_workout_value">%1$s phút</string>
+    <string name="fitness_tracker_quick_entry">Ghi nhanh</string>
+    <string name="fitness_tracker_step_start">Bắt đầu đếm bước</string>
+    <string name="fitness_tracker_step_stop">Dừng và lưu</string>
+    <string name="fitness_tracker_step_saving">Đang lưu…</string>
+    <string name="fitness_tracker_step_retry">Thử lưu lại</string>
+    <string name="fitness_tracker_step_preparing">Đang lấy mốc từ cảm biến…</string>
+    <string name="fitness_tracker_step_counting">Phiên này đã đo %1$s bước</string>
+    <string name="fitness_tracker_step_save_failed">Chưa lưu được %1$s bước của phiên vừa rồi.</string>
+    <string name="fitness_tracker_step_unavailable">Thiết bị này chưa có cảm biến đếm bước.</string>
+    <string name="fitness_tracker_step_permission_needed">Cấp quyền Hoạt động thể chất trong Cài đặt của Vitality để đếm bước.</string>
+    <string name="fitness_tracker_step_start_failed">Chưa bật được cảm biến. Bạn có thể thử lại.</string>
+    <string name="fitness_tracker_step_empty">Phiên vừa rồi ghi nhận 0 bước.</string>
+    <string name="fitness_tracker_step_entry_title">Bước chân tự động</string>
+    <string name="fitness_tracker_add_steps">+250 bước</string>
+    <string name="fitness_tracker_custom_steps">Nhập số bước khác</string>
+    <string name="fitness_tracker_add_workout">+10 phút tập</string>
+    <string name="fitness_tracker_goal_met">Đã đạt mục tiêu %1$s phút</string>
+    <string name="fitness_tracker_goal_remaining">Còn %1$s phút để đạt mục tiêu</string>
+
+    <style name="Widget.Vitality.FitnessTracker.Button" parent="Widget.Vitality.Button">
+        <item name="backgroundTint">@color/green_dark</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="strokeWidth">0dp</item>
+    </style>
+</resources>

@@ -11,6 +11,9 @@ import com.example.vitality.data.entity.*;
             + "OR (kind!='sleep' AND startedAt>=:start AND startedAt<:end)) "
             + "ORDER BY CASE WHEN kind='sleep' THEN endedAt ELSE startedAt END DESC, id DESC")
     List<JournalEntry> journalBetween(String kind, long start, long end);
+    @Query("SELECT * FROM journal WHERE kind IN ('activity', 'steps') "
+            + "AND startedAt>=:start AND startedAt<:end ORDER BY startedAt DESC, id DESC")
+    List<JournalEntry> activityBetween(long start, long end);
     @Query("SELECT COUNT(*) FROM journal WHERE kind='sleep' AND endedAt IS NULL AND id!=:id") int activeSleepsExcept(long id);
     @Query("SELECT COUNT(*) FROM journal WHERE kind='sleep' AND id!=:id AND startedAt<:end AND COALESCE(endedAt,9223372036854775807)>:start") int overlappingSleeps(long id,long start,long end);
     @Insert long insert(JournalEntry e);

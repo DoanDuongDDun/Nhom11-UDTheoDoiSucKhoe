@@ -21,6 +21,10 @@ public class WellnessRepository  {
         dao=db.wellness();periods=db.periods();
     }
     public void saveJournal(JournalEntry e) {
+        if (JournalEntry.KIND_STEPS.equals(e.kind)
+                && (e.amount < 1 || e.amount > Integer.MAX_VALUE || e.amount != Math.rint(e.amount))) {
+            throw new IllegalArgumentException("Số bước phải là số nguyên dương");
+        }
         JournalEntry[] before={null};
         long[] savedId={e.id};
         db.runInTransaction(()-> {
@@ -38,6 +42,19 @@ public class WellnessRepository  {
         );
         if(e.id==0||before[0]!=null)HealthNotificationEvents.journalSaved(app,db,e,savedId[0],before[0]);
     }
+
+    public void saveProfileDetails(String name, String birthday, String gender, int bodyTemplate) {
+        db.runInTransaction(() -> {
+            UserProfile profile = dao.savedProfile();
+            if (profile == null) profile = new UserProfile();
+            profile.name = name;
+            profile.birthday = birthday;
+            profile.gender = gender;
+            profile.bodyTemplate = bodyTemplate;
+            dao.save(profile);
+        });
+    }
+
     public void savePeriod(PeriodEntry e) {
         db.runInTransaction(() -> {
             long today=Formats.dayStart(System.currentTimeMillis());

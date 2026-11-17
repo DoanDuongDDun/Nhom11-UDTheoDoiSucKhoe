@@ -61,7 +61,12 @@ public class DiaryFragment extends PageFragment  {
         quick(row2,"Giấc ngủ",R.drawable.ic_moon,R.drawable.bg_icon_violet,0xFF7360DD,()->navigate(R.id.sleep));
         // Dòng thời gian
         List<JournalEntry> filtered=new ArrayList<>();
-        for(JournalEntry e:all)if(!e.kind.equals("sleep")&&(filter.equals("all")||e.kind.equals(filter)))filtered.add(e);
+        for (JournalEntry e : all) {
+            boolean stepActivity = "activity".equals(filter) && JournalEntry.KIND_STEPS.equals(e.kind);
+            if (!"sleep".equals(e.kind) && ("all".equals(filter) || filter.equals(e.kind) || stepActivity)) {
+                filtered.add(e);
+            }
+        }
         int filterIndex=Math.max(0,Arrays.asList(FILTER_KEYS).indexOf(filter));
         WidgetCardBinding timeline=card("DÒNG THỜI GIAN","Bữa ăn, nước và vận động","Lọc: "+FILTER_NAMES[filterIndex],()->new AlertDialog.Builder(requireContext()).setItems(FILTER_NAMES,(d,w)-> {
             filter=FILTER_KEYS[w];render();
@@ -151,19 +156,20 @@ public class DiaryFragment extends PageFragment  {
             detail=blank(e.note)?"Uống nước":e.note;
             value=Formats.number(e.amount)+" ml";
         }
-        else if(e.kind.equals("activity")) {
+        else if("activity".equals(e.kind)||JournalEntry.KIND_STEPS.equals(e.kind)) {
             icon=R.drawable.ic_shoe;iconBg=R.drawable.bg_icon_mint;tint=0xFF1D9367;
-            title=blank(e.title)?"Vận động":e.title;
-            detail=blank(e.note)?"Hoạt động thể chất":e.note;
-            value=Formats.number(e.amount)+" phút";
+            boolean steps=JournalEntry.KIND_STEPS.equals(e.kind);
+            title=e.nameOr(steps?"Bước chân":"Vận động");
+            detail=blank(e.note)||title.equals(e.note.trim())?"":e.note;
+            value=Formats.activityAmount(e);
         }
         else {
             icon=R.drawable.ic_fork;iconBg=R.drawable.bg_icon_lime;tint=0xFF618E27;
-            title=blank(e.title)?"Bữa ăn":e.title;
+            title=e.nameOr("Bữa ăn");
             StringBuilder d=new StringBuilder();
             if(!blank(e.category))d.append(e.category);
             if(!blank(e.portion))d.append(d.length()>0?" • ":"").append(e.portion);
-            if(!blank(e.note))d.append(d.length()>0?" • ":"").append(e.note);
+            if(!blank(e.note)&&!title.equals(e.note.trim()))d.append(d.length()>0?" • ":"").append(e.note);
             detail=d.length()==0?"Bữa ăn":d.toString();
             value=e.calories==null?"—":Formats.number(e.calories)+" kcal";
         }
@@ -176,6 +182,10 @@ public class DiaryFragment extends PageFragment  {
         r.jrTime.setText(Formats.shortTime(e.startedAt,today));
     }
     public static String label(JournalEntry e) {
+        if(JournalEntry.KIND_STEPS.equals(e.kind)) {
+            return Formats.date(e.startedAt)+"\n"+e.nameOr("Bước chân")+" • "+Formats.activityAmount(e)
+                    +(blank(e.note)?"":"\n"+e.note);
+        }
         String detail=e.kind.equals("water")?Formats.number(e.amount)+" ml nước":e.kind.equals("activity")?e.title+" • "+Formats.number(e.amount)+" phút":e.title+" • "+e.category+" • "+e.portion;
         return Formats.date(e.startedAt)+"\n"+detail+(e.calories==null?"":" • "+Formats.number(e.calories)+" kcal")+(e.note.isEmpty()?"":"\n"+e.note);
     }

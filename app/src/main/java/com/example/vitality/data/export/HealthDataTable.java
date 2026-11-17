@@ -5,7 +5,7 @@ import com.example.vitality.data.export.HealthDataFilter.Type;
 enum HealthDataTable {
     WATER(Type.WATER, date("Ngày"), time("Giờ"), number("Lượng nước (ml)"), text("Ghi chú")),
     ACTIVITY(Type.ACTIVITY, date("Ngày"), time("Giờ"), text("Hoạt động"), number("Thời lượng (phút)"),
-            number("Quãng đường (km)"), number("Tiêu hao (kcal)"), text("Ghi chú")),
+            number("Quãng đường (km)"), number("Tiêu hao (kcal)"), text("Ghi chú"), number("Số bước")),
     SLEEP(Type.SLEEP, timestamp("Bắt đầu"), timestamp("Kết thúc"), number("Thức giữa giấc (phút)"),
             number("Ngủ thực tế (phút)"), number("Chất lượng (/5)"), text("Ghi chú")),
     CYCLE(Type.CYCLE, date("Ngày"), time("Giờ đến hạn"), text("Tên lịch"), text("Trạng thái")),

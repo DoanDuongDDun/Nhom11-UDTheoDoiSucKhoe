@@ -33,9 +33,6 @@ public final class NotificationEvent {
         PROFILE_GOAL_REACHED(Group.GOALS, R.id.profile, "Bạn đã hoàn thành một mục tiêu."),
         ACTIVITY_SAVED(Group.ACTIVITY, R.id.activity, "Một hoạt động đã được ghi nhận."),
         SLEEP_FINISHED(Group.SLEEP, R.id.sleep, "Bạn có kết quả giấc ngủ mới."),
-        MEASUREMENT_REMINDER(null, R.id.body, "Đã đến lúc cập nhật số đo."),
-        WATER_REMINDER(null, R.id.home, "Đã đến lúc ghi nhận nước uống."),
-        BEDTIME_REMINDER(null, R.id.sleep, "Đã đến lúc chuẩn bị đi ngủ."),
         PERIOD_REMINDER(null, R.id.period, "Sắp đến ngày bắt đầu kỳ kinh dự kiến.");
 
         @Nullable public final Group group;

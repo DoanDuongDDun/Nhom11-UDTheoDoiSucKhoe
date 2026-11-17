@@ -72,7 +72,6 @@ public class HealthDataExportFragment extends Fragment {
         binding.exportThrough.setOnClickListener(v -> chooseDate(false));
         binding.viewHealthData.setOnClickListener(v -> model.viewData());
         binding.exportHealthExcel.setOnClickListener(v -> model.export(HealthDataExportFormat.EXCEL));
-        binding.exportHealthCsv.setOnClickListener(v -> model.export(HealthDataExportFormat.CSV));
         adapter = new RecordAdapter();
         binding.exportRecords.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.exportRecords.setAdapter(adapter);
@@ -114,7 +113,6 @@ public class HealthDataExportFragment extends Fragment {
         binding.exportType.setEnabled(!screen.busy);
         binding.viewHealthData.setEnabled(!screen.busy);
         binding.exportHealthExcel.setEnabled(!screen.busy && screen.excelAvailable);
-        binding.exportHealthCsv.setEnabled(!screen.busy && !screen.rows.isEmpty());
         binding.exportStatus.setText(screen.status);
         binding.exportStatus.setVisibility(screen.status.isEmpty() ? View.GONE : View.VISIBLE);
         binding.exportCount.setText(getString(R.string.health_export_record_count, screen.rows.size()));

@@ -111,17 +111,6 @@
                 android:textAllCaps="false"
                 app:cornerRadius="14dp" />
         </LinearLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/export_health_csv"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:enabled="false"
-            android:minHeight="48dp"
-            android:text="@string/health_export_save_csv"
-            android:textAllCaps="false" />
     </LinearLayout>
 
     <TextView

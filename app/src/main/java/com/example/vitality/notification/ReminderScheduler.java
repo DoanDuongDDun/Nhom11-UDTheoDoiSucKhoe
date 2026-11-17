@@ -38,10 +38,8 @@ public final class ReminderScheduler  {
             NotificationController.createChannels(app);
             NotificationSettings settings = NotificationSettings.read(app);
             SharedPreferences legacy = app.getSharedPreferences("reminders", Context.MODE_PRIVATE);
-            boolean hasReminders = settings.allows(Group.CYCLE) || legacy.getBoolean("measure", false)
-                    || legacy.getBoolean("water", false) || legacy.getBoolean("bed", false)
-                    || legacy.getBoolean("period", false);
-            boolean enabled = settings.checked(NotificationSettings.MASTER) && hasReminders;
+            boolean enabled = settings.allows(Group.CYCLE)
+                    || (settings.checked(NotificationSettings.MASTER) && legacy.getBoolean("period", false));
             PendingIntent alarm = pending(app, ACTION, PendingIntent.FLAG_NO_CREATE);
             if (alarm != null && (reset || !enabled)) {
                 manager.cancel(alarm);

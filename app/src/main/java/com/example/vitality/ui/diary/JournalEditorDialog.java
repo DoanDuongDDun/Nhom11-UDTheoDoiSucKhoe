@@ -74,19 +74,23 @@ public class JournalEditorDialog extends DialogFragment  {
         int pad=(int)(20*getResources().getDisplayMetrics().density);
         root.setPadding(pad,0,pad,0);
         scroll.addView(root);
-        field(root,"Ngày giờ (dd/MM/yyyy HH:mm)",Formats.date(entry.startedAt),false);
+        field(root,"Ngày giờ (dd/mm/yyyy HH:mm)",Formats.date(entry.startedAt),false);
         switch(entry.kind) {
-            case "nutrition":field(root,"Tên món",entry.title,false);
+            case "nutrition":field(root,"Tên món",entry.nameOr(""),false);
             field(root,"Loại bữa (sáng / trưa / tối / phụ)",entry.category,false);
             field(root,"Khẩu phần",entry.portion,false);
             field(root,"Năng lượng kcal (tùy chọn)",entry.calories==null?"":Formats.number(entry.calories),true);
             break;
-            case "activity":field(root,"Loại hoạt động",entry.title,false);
+            case "activity":field(root,"Loại hoạt động",entry.nameOr(""),false);
             field(root,"Thời lượng (phút)",entry.amount==0?"":Formats.number(entry.amount),true);
             field(root,"Quãng đường km (tùy chọn)",entry.distanceKm==null?"":Formats.number(entry.distanceKm),true);
             field(root,"Năng lượng kcal (tùy chọn)",entry.calories==null?"":Formats.number(entry.calories),true);
             break;
-            case "sleep":field(root,"Kết thúc (dd/MM/yyyy HH:mm)",Formats.date(entry.endedAt==null?System.currentTimeMillis():entry.endedAt),false);
+            case JournalEntry.KIND_STEPS:
+            field(root,"Số bước",Long.toString(Math.round(entry.amount)),true)
+                    .setInputType(InputType.TYPE_CLASS_NUMBER);
+            break;
+            case "sleep":field(root,"Kết thúc (dd/mm/yyyy HH:mm)",Formats.date(entry.endedAt==null?System.currentTimeMillis():entry.endedAt),false);
             field(root,"Thức giữa giấc (phút)",Formats.number(entry.awakeMinutes),true);
             field(root,"Chất lượng tự đánh giá (1–5)",String.valueOf(entry.quality),true);
             break;
@@ -123,6 +127,10 @@ public class JournalEditorDialog extends DialogFragment  {
                 e.distanceKm=opt(3);
                 e.calories=opt(4);
                 if(e.title.isEmpty())throw new IllegalArgumentException("Nhập loại hoạt động");
+                break;
+                case JournalEntry.KIND_STEPS:
+                e.title=entry.nameOr("Bước chân");
+                e.amount=num(1,1,Integer.MAX_VALUE);
                 break;
                 case "sleep":e.endedAt=date(1);
                 e.awakeMinutes=num(2,0,1440);

@@ -153,8 +153,13 @@ public final class HealthDataDocumentStore {
             while (json.hasNext()) {
                 List<Object> row = new ArrayList<>(table.columns.length);
                 json.beginArray();
-                for (HealthDataTable.Column column : table.columns) {
-                    row.add(readDraftCell(json, column.cellType));
+                for (int i = 0; i < table.columns.length; i++) {
+                    // Drafts from before step tracking have no value for the new last column.
+                    if (table == HealthDataTable.ACTIVITY && i == table.columns.length - 1 && !json.hasNext()) {
+                        row.add(null);
+                    } else {
+                        row.add(readDraftCell(json, table.columns[i].cellType));
+                    }
                 }
                 json.endArray();
                 rows.add(row);

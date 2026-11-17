@@ -88,6 +88,9 @@ public abstract class PageFragment extends Fragment  {
             double current=GoalProgress.current(goal,vm.journals.getValue(),vm.measurements.getValue(),System.currentTimeMillis());
             int percent=GoalProgress.percent(goal,current);
             card("MỤC TIÊU HÔM NAY",goal.title,"Quản lý",()->navigate(R.id.goals));
+            if("nutrition".equals(goal.kind)&&goal.keyword!=null&&!goal.keyword.trim().isEmpty()) {
+                text("Tính món có từ khóa “"+goal.keyword+"”");
+            }
             text(Formats.number(current)+" / "+Formats.number(goal.target)+" "+GoalProgress.unit(goal)+" · "+percent+"%");
             ProgressBar progress=widget(R.layout.widget_goal_progress);
             progress.setProgress(percent);

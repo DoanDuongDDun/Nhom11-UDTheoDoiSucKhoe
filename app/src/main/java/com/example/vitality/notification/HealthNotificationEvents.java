@@ -24,19 +24,18 @@ public final class HealthNotificationEvents {
                                     long id, JournalEntry previous) {
         if (id <= 0) return;
         try {
-            if ("activity".equals(entry.kind) && previous == null) {
-                String name = entry.title;
-                if (name == null || name.trim().isEmpty()) name = entry.note;
-                if (name == null || name.trim().isEmpty()) name = "Hoạt động";
+            boolean steps = JournalEntry.KIND_STEPS.equals(entry.kind);
+            if (previous == null && ("activity".equals(entry.kind) || steps)) {
                 NotificationController.send(app, new NotificationEvent(Type.ACTIVITY_SAVED,
-                        Long.toString(id), id, name + " • " + Formats.number(entry.amount) + " phút"));
+                        Long.toString(id), id, entry.nameOr(steps ? "Bước chân" : "Hoạt động")
+                                + " • " + Formats.activityAmount(entry)));
             }
             if ("sleep".equals(entry.kind) && entry.endedAt != null
                     && (previous == null || previous.endedAt == null)) {
                 NotificationController.send(app, new NotificationEvent(
                         Type.SLEEP_FINISHED, Long.toString(id), id, null));
             }
-            if (NotificationController.canSend(app, Group.GOALS)) {
+            if (!steps && NotificationController.canSend(app, Group.GOALS)) {
                 checkDailyGoals(app, db, entry, id, previous);
             }
         } catch (RuntimeException error) {
@@ -58,7 +57,7 @@ public final class HealthNotificationEvents {
         if (previous != null) before.add(previous);
         boolean hasGeneralGoal = false;
         for (Goal goal : goals) {
-            hasGeneralGoal |= goal.keyword == null || goal.keyword.isEmpty();
+            hasGeneralGoal |= goal.keyword == null || goal.keyword.trim().isEmpty();
             if (goal.createdAt > now || !crossed(goal, before, after, day)) continue;
             announceGoal(app, goal, goal.id + ":" + day, Type.GOAL_REACHED);
         }

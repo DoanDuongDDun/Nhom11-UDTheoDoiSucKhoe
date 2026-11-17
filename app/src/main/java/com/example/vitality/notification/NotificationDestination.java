@@ -51,12 +51,11 @@ public final class NotificationDestination {
                             + Formats.number(goal.target) + " " + GoalProgress.unit(goal);
                 case ACTIVITY_SAVED:
                     JournalEntry activity = db.wellness().journal(recordId);
-                    if (activity == null || !"activity".equals(activity.kind)) return null;
-                    String name = activity.title;
-                    if (name == null || name.trim().isEmpty()) name = activity.note;
-                    if (name == null || name.trim().isEmpty()) name = "Hoạt động";
-                    return name + "\n" + Formats.date(activity.startedAt) + "\n"
-                            + Formats.number(activity.amount) + " phút";
+                    if (activity == null) return null;
+                    boolean steps = JournalEntry.KIND_STEPS.equals(activity.kind);
+                    if (!steps && !"activity".equals(activity.kind)) return null;
+                    return activity.nameOr(steps ? "Bước chân" : "Hoạt động")
+                            + "\n" + Formats.date(activity.startedAt) + "\n" + Formats.activityAmount(activity);
                 case SLEEP_FINISHED:
                     JournalEntry sleep = db.wellness().journal(recordId);
                     if (sleep == null || !"sleep".equals(sleep.kind) || sleep.endedAt == null) return null;

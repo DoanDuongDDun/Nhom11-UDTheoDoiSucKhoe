@@ -48,11 +48,20 @@ public final class Validation  {
         return v;
     }
     public static long date(String text) {
-        SimpleDateFormat f=new SimpleDateFormat("dd/MM/yyyy HH:mm",Locale.getDefault());
+        return parseDate(text, "dd/MM/yyyy HH:mm", "Nhập ngày giờ theo dạng dd/mm/yyyy HH:mm, ví dụ 05/11/2026 08:30");
+    }
+
+    public static long dateOnly(String text) {
+        return parseDate(text, "dd/MM/yyyy", "Nhập ngày theo dạng dd/mm/yyyy, ví dụ 05/11/2000");
+    }
+
+    private static long parseDate(String text, String pattern, String error) {
+        String input = text.trim();
+        SimpleDateFormat f=new SimpleDateFormat(pattern,Locale.getDefault());
         f.setLenient(false);
         ParsePosition p=new ParsePosition(0);
-        Date d=f.parse(text.trim(),p);
-        if(d==null||p.getIndex()!=text.trim().length())throw new IllegalArgumentException("Định dạng dd/MM/yyyy HH:mm");
+        Date d=f.parse(input,p);
+        if(d==null||p.getIndex()!=input.length())throw new IllegalArgumentException(error);
         return d.getTime();
     }
 }

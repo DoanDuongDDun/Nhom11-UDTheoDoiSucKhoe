@@ -43,9 +43,6 @@ public class ReminderReceiver extends BroadcastReceiver {
         long day = Formats.dayStart(now);
         int hour = clock.get(Calendar.HOUR_OF_DAY);
         SharedPreferences legacy = app.getSharedPreferences("reminders", Context.MODE_PRIVATE);
-        daily(app, legacy, "measure", Type.MEASUREMENT_REMINDER, 8, hour, day);
-        daily(app, legacy, "water", Type.WATER_REMINDER, 10, hour, day);
-        daily(app, legacy, "bed", Type.BEDTIME_REMINDER, 22, hour, day);
         remindPeriod(app, legacy, wellness, hour, day);
         if (NotificationController.canSend(app, Group.CYCLE)) {
             for (HabitOccurrence occurrence : wellness.dao.dueReminders(now - HOUR, now)) {
@@ -65,12 +62,5 @@ public class ReminderReceiver extends BroadcastReceiver {
                 || legacy.getBoolean("period_" + next, false)) return;
         NotificationController.send(app, new NotificationEvent(Type.PERIOD_REMINDER,
                 Long.toString(next), 0, "Kỳ kinh dự kiến bắt đầu ngày " + Formats.day(next)));
-    }
-
-    private static void daily(Context app, SharedPreferences legacy, String key, Type type,
-                              int dueHour, int hour, long day) {
-        if (hour >= dueHour && legacy.getBoolean(key, false) && !legacy.contains(key + Formats.day(day))) {
-            NotificationController.send(app, new NotificationEvent(type, Long.toString(day), 0, null));
-        }
     }
 }

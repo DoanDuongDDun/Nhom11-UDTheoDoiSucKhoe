@@ -49,7 +49,7 @@ public class SymptomEditorFragment extends PageFragment  {
         custom=field("Tên triệu chứng khác (chỉ dùng khi chọn \"Khác\")","",false);
         text("Mức độ");
         Spinner levelSpinner=spinner(LEVELS,p->levelPos=p);
-        time=field("Thời gian xuất hiện (dd/MM/yyyy HH:mm)",Formats.date(original.occurredAt),false);
+        time=field("Thời gian xuất hiện (dd/mm/yyyy HH:mm)",Formats.date(original.occurredAt),false);
         note=field("Ghi chú",original.note,false);
         if(id!=0) {
             int index=0;
